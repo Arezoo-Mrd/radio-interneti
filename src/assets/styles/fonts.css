@@ -1,0 +1,54 @@
+@layer base {
+    @font-face {
+        font-family: "Peyda";
+        src: url("./../../../public/fonts/PeydaWeb-Regular.woff2") format("woff2");
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "PeydaBlack";
+        src: url("./../../../public/fonts/PeydaWeb-Black.woff2") format("woff2");
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "PeydaBold";
+        src: url("./../../../public/fonts/PeydaWeb-Bold.woff2") format("woff2");
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "PeydaExtraBold";
+        src: url("./../../../public/fonts/PeydaWeb-ExtraBold.woff2") format("woff2");
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "PeydaLight";
+        src: url("./../../../public/fonts/peydaWeb-light.woff2") format("woff2");
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "PeydaMedium";
+        src: url("./../../../public/fonts/PeydaWeb-Medium.woff2") format("woff2");
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "PeydaExtraLight";
+        src: url("./../../../public/fonts/peydaWeb-extralight.woff2") format("woff2");
+        font-display: swap;
+    }
+         @font-face {
+             font-family: "PeydaThin";
+             src: url("./../../../public/fonts/PeydaWeb-Thin.woff2") format("woff2");
+             font-display: swap;
+         }
+
+    @font-face {
+        font-family: "PeydaSemiBold";
+        src: url("./../../../public/fonts/PeydaWeb-SemiBold.woff2") format("woff2");
+        font-display: swap;
+    }
+}

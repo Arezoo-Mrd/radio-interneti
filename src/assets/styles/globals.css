@@ -1,3 +1,4 @@
+@import "./fonts.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -6,6 +7,22 @@
 
 @theme {
   --color-primary-main: #8665E6;
+  --color-login-bg: #F7F5F9;
+  --color-slate-dark:#3B4251;
+  --color-slate-smoke: #6C7278;
+  --color-slate-light: #EDF1F3;
+  --color-primary-button: #7B57E4;
+  --text-2xl: 22px;
+  --font-Peyda: Peyda;
+  --font-PeydaBlack: PeydaBlack;
+  --font-PeydaBold: PeydaBold;
+  --font-PeydaExtraLight: PeydaExtraLight;
+  --font-PeydaLight: PeydaLight;
+  --font-PeydaMedium: PeydaMedium;
+  --font-PeydaSemiBold: PeydaSemiBold;
+  --font-PeydaThin: PeydaThin;
+  --font-PeydaExtraBold: PeydaExtraBold;
+
 }
 
 @theme inline {
@@ -42,10 +59,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+
 }
 
 :root {
