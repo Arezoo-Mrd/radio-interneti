@@ -1,17 +1,16 @@
-import { fetchInstance } from "@/utils/fetch";
+import { fetchInstance } from "@/lib/fetch";
 import { LOGIN } from "./constants";
-import { LoginRequest } from "./api.types";
+import { LoginRequest, LoginResponse } from "./api.types";
 import { useMutation } from "@tanstack/react-query";
+import { setCookie } from "@/lib/cookies";
+import { useRouter } from "next/navigation";
 
 export const postLogin = async (request: LoginRequest) => {
- const formData = new FormData();
- formData.append("email", request.email);
- formData.append("password", request.password);
- const data = fetchInstance({
+ const data = await fetchInstance<LoginResponse>({
   path: LOGIN,
   options: {
    method: "POST",
-   body: formData,
+   body: JSON.stringify(request),
   },
   isFormData: true,
  });
@@ -20,8 +19,15 @@ export const postLogin = async (request: LoginRequest) => {
 };
 
 export const useLoginMutation = () => {
+ const router = useRouter();
  return useMutation({
   mutationFn: postLogin,
   mutationKey: ["login"],
+  onSuccess: (data) => {
+   if (data) {
+    setCookie("token", data.data.access.token);
+    router.push("/dashboard");
+   }
+  },
  });
 };

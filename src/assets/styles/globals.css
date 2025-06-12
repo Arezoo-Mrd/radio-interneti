@@ -8,14 +8,17 @@
   --color-primary-main: #8665E6;
   --color-login-bg: #F7F5F9;
   --color-slate-dark:#3B4251;
+
   --color-slate-smoke: #6C7278;
   --color-slate-light: #EDF1F3;
   --color-primary-button: #7B57E4;
+  --color-primary-main2: #7367F0;
   --color-primary-light: #815EE5;
   --color-sidebar-background: #EEEEEE;
   --color-main-background: #F8F7FA;
   --color-gray-600: #686868;
   --text-2xl: 22px;
+  --text-md:15px;
   --font-Peyda: Peyda;
   --font-PeydaBlack: PeydaBlack;
   --font-PeydaBold: PeydaBold;
