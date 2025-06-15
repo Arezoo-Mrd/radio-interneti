@@ -25,3 +25,42 @@ export type MusicType = {
 };
 
 export type MediaArchiveType = MusicType[];
+
+export type GetAllMusicQueryParams = {
+ title?: string;
+ artist?: string;
+ is_ads?: boolean;
+ genre_id?: number;
+ media_type?: number;
+ playlist_id?: number;
+ channel_id?: number;
+ page?: number;
+ per_page?: number;
+ page_size?: number;
+ sort_by?: string;
+ sort_order?: "asc" | "desc";
+};
+
+export type GenreType = {
+ id: number;
+ name: string;
+ created_at: string;
+ updated_at: string;
+};
+
+export type BaseFilterOptionType = {
+ id: number | string;
+ name: string;
+};
+
+export type GetFilterOptionsResponse = {
+ playlists: BaseFilterOptionType[];
+ artists: string[];
+ genres: BaseFilterOptionType[];
+};
+
+export type FilterOptionsType = {
+ playlists: BaseFilterOptionType[];
+ artists: BaseFilterOptionType[];
+ genres: BaseFilterOptionType[];
+};

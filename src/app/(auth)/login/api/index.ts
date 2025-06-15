@@ -26,6 +26,8 @@ export const useLoginMutation = () => {
   onSuccess: (data) => {
    if (data) {
     setCookie("token", data.data.access.token);
+    setCookie("user_info", JSON.stringify(data.data.user));
+
     router.push("/dashboard");
    }
   },

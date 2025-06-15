@@ -1,23 +1,120 @@
-import { fetchInstance } from "@/lib/fetch";
-import { ALL_MUSIC } from "./constants";
+import { defaultFilterOption } from "@/hooks/use-selected-filter";
 import { getCookie } from "@/lib/cookies";
-import { cookies } from "next/headers";
-import { MediaArchiveType } from "./api.types";
+import { fetchInstance, SuccessResponse } from "@/lib/fetch";
+import { appendQueryParams } from "@/lib/queryParams";
+import { AddMediasToPlaylistSchemaType } from "@/schema/media.schema";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+ FilterOptionsType,
+ GetAllMusicQueryParams,
+ GetFilterOptionsResponse,
+ MediaArchiveType,
+} from "./api.types";
+import {
+ ADD_MEDIAS_TO_PLAYLIST,
+ ALL_MUSIC,
+ DELETE_MUSIC,
+ GET_FILTER_OPTIONS,
+} from "./constants";
 
 export const getAllMusic = async ({
- isServer = false,
+ params,
+ token,
 }: {
- isServer?: boolean;
+ params?: GetAllMusicQueryParams;
+ token?: string;
 }) => {
- const token = isServer
-  ? (await cookies()).get("token")?.value
-  : await getCookie("token");
- const response = (await fetchInstance)<MediaArchiveType>({
-  path: ALL_MUSIC,
+ const queryParams = appendQueryParams(params || {});
+ const currentToken = token || (await getCookie("token"));
+
+ const response = await fetchInstance<MediaArchiveType>({
+  path: params ? ALL_MUSIC + "?" + queryParams : ALL_MUSIC,
   options: {
    method: "GET",
   },
-  token: token!,
+  token: currentToken!,
  });
+
  return response;
+};
+
+export const getAllFilterData = async ({
+ token,
+}: {
+ token?: string;
+}): Promise<SuccessResponse<FilterOptionsType> | undefined> => {
+ const currentToken = token || (await getCookie("token"));
+
+ const response = await fetchInstance<GetFilterOptionsResponse>({
+  path: GET_FILTER_OPTIONS,
+  options: {
+   method: "GET",
+  },
+  token: currentToken!,
+ });
+
+ if (response && response?.data) {
+  return {
+   ...response,
+   data: {
+    genres: [defaultFilterOption, ...response.data.genres],
+    playlists: [defaultFilterOption, ...response.data.playlists],
+    artists: response.data.artists.map((artist: string) => ({
+     id: artist,
+     name: artist,
+    })),
+   },
+  };
+ }
+
+ return undefined;
+};
+
+const deleteMusic = async (id: string) => {
+ const currentToken = await getCookie("token");
+
+ const response = await fetchInstance<{ message: string }>({
+  path: DELETE_MUSIC(id),
+  options: { method: "DELETE" },
+  token: currentToken!,
+ });
+
+ return response;
+};
+
+const addMediasToPlaylist = async (data: AddMediasToPlaylistSchemaType) => {
+ const currentToken = await getCookie("token");
+ const response = await fetchInstance<{ message: string }>({
+  path: ADD_MEDIAS_TO_PLAYLIST,
+  options: { method: "POST", body: JSON.stringify(data) },
+  token: currentToken!,
+ });
+
+ return response;
+};
+
+export const useGetAllMusicQuery = (params?: GetAllMusicQueryParams) => {
+ return useQuery({
+  queryKey: ["all-music", params],
+  queryFn: () => getAllMusic({ params }),
+  enabled: false,
+ });
+};
+
+export const useDeleteMusicMutation = () => {
+ const queryClient = useQueryClient();
+ return useMutation({
+  mutationFn: deleteMusic,
+  mutationKey: ["delete-music"],
+  onSuccess: () => {
+   queryClient.invalidateQueries({ queryKey: ["all-music"] });
+  },
+ });
+};
+
+export const useAddMediasToPlaylistMutation = () => {
+ return useMutation({
+  mutationFn: addMediasToPlaylist,
+  mutationKey: ["add-medias-to-playlist"],
+ });
 };

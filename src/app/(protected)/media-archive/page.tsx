@@ -1,9 +1,18 @@
 import MediaArchive from "@/components/MediaArchive";
-import { getAllMusic } from "./api";
+import { cookies } from "next/headers";
+import { getAllFilterData, getAllMusic } from "./api";
 
 export default async function MediaArchivePage() {
- const allMusic = await getAllMusic({ isServer: true });
- console.log(allMusic);
+ const token = (await cookies()).get("token")?.value || undefined;
 
- return <MediaArchive data={allMusic?.data} />;
+ const allMusic = await getAllMusic({ token: token });
+ const filterOptions = await getAllFilterData({ token: token });
+
+ return (
+  <MediaArchive
+   initialData={allMusic?.data}
+   initialPagination={allMusic?.paginate}
+   filterOptions={filterOptions?.data}
+  />
+ );
 }

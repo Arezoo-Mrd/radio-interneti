@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { getCookie } from "./cookies";
+import { deleteCookie, getCookie } from "./cookies";
 
-type SuccessResponse<T> = {
+export type SuccessResponse<T> = {
  message: string;
  status: string;
  code: number;
@@ -47,6 +47,7 @@ export const fetchInstance = async <T>(opt: {
    Authorization: `Bearer ${token}`,
   },
  };
+
  const baseUrl = opt.baseUrl || process.env.NEXT_PUBLIC_BASE_URL;
 
  try {
@@ -57,6 +58,8 @@ export const fetchInstance = async <T>(opt: {
   const isJson = contentType?.includes("application/json");
 
   if (response.status === 401) {
+   deleteCookie("token");
+   deleteCookie("user_info");
    redirect("/login");
   }
 

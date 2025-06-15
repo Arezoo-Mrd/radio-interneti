@@ -161,3 +161,50 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8e67efc9;
+  border-radius: 100vh;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8e67efc9;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8e67efc9 transparent;
+}
+
+/* For Edge and IE */
+*::-ms-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-ms-scrollbar-track {
+  background: transparent;
+}
+
+*::-ms-scrollbar-thumb {
+  background: var(--color-primary-disabled);
+  border-radius: 100vh;
+}
+
+
+/* Add smooth scrolling to the entire page */
+html {
+  scroll-behavior: smooth;
+}

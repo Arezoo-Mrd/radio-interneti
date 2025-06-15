@@ -4,7 +4,8 @@ export function setCookie(name: string, value: string, days = 1) {
 }
 
 export async function getCookie(name: string) {
- const cookieStr = document.cookie
+ if (typeof window === "undefined") return null;
+ const cookieStr = document?.cookie
   .split("; ")
   .find((row) => row.startsWith(`${name}=`))
   ?.split("=")[1];
