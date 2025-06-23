@@ -52,7 +52,6 @@ export function DataTable<TData extends MusicType, TValue>({
  onPageChange,
  onPageSizeChange,
  isLoading,
- onAddNew,
  currentPage,
  currentPageSize,
  filterOptions,
@@ -76,7 +75,7 @@ export function DataTable<TData extends MusicType, TValue>({
  return (
   <div className="space-y-4">
    {/* Media Archive Header */}
-   <MediaArchiveHeader onAddNew={onAddNew} filterOptions={filterOptions} />
+   <MediaArchiveHeader filterOptions={filterOptions} />
 
    {/* Table Content */}
    <>

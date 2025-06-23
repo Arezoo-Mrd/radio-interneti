@@ -93,15 +93,15 @@ const MediaArchive = ({
   }
  };
 
- useEffect(() => {
-  if (selectedFilters.title) {
-   setTimeout(() => {
-    refetch();
-   }, 500);
-  } else {
-   refetch();
-  }
- }, [page, pageSize, selectedFilters, refetch]);
+ //  useEffect(() => {
+ //   if (selectedFilters.title) {
+ //    setTimeout(() => {
+ //     refetch();
+ //    }, 500);
+ //   } else {
+ //    refetch();
+ //   }
+ //  }, [page, pageSize, selectedFilters, refetch]);
 
  return (
   <div className="w-full overflow-x-hidden">

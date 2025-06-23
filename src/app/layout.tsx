@@ -1,5 +1,6 @@
 import "@/assets/styles/globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({
   <html lang="fa" dir="rtl">
    <body className={`font-Peyda`}>
     <QueryProvider>{children}</QueryProvider>
+    <Toaster className="font-Peyda!" position="top-center" />
    </body>
   </html>
  );

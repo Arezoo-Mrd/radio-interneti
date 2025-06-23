@@ -11,16 +11,14 @@ import { useSelectedFilters } from "@/hooks/use-selected-filter";
 import { Plus, Search } from "lucide-react";
 import { useCallback } from "react";
 import DropDownFilter from "./DropDownFilter";
+import { useRouter } from "next/navigation";
 
 interface MediaArchiveHeaderProps {
- onAddNew?: () => void;
  filterOptions: FilterOptionsType;
 }
 
-export function MediaArchiveHeader({
- onAddNew,
- filterOptions,
-}: MediaArchiveHeaderProps) {
+export function MediaArchiveHeader({ filterOptions }: MediaArchiveHeaderProps) {
+ const router = useRouter();
  const { selectedFilters, mediaTypes } = useSelectedFilters(filterOptions);
 
  const { updateFilter } = useFilterParams();
@@ -38,6 +36,10 @@ export function MediaArchiveHeader({
   },
   [updateFilter]
  );
+
+ const onAddNew = () => {
+  router.push("media-archive/add-media");
+ };
 
  return (
   <div className="flex items-center justify-between gap-6  px-6 h-25 bg-background ">
