@@ -104,7 +104,7 @@ const MediaArchive = ({
  //  }, [page, pageSize, selectedFilters, refetch]);
 
  return (
-  <div className="w-full overflow-x-hidden">
+  <div className="w-full overflow-x-hidden px-6.5">
    {isLoading ? (
     <div className="flex items-center flex-col gap-4 justify-center p-8">
      <Skeleton className="h-15 w-full" />

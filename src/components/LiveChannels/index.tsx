@@ -1,19 +1,19 @@
 "use client";
 
 import {
- type ColumnDef,
+ type ColumnFiltersState,
+ type SortingState,
+ type VisibilityState,
  flexRender,
  getCoreRowModel,
+ getFilteredRowModel,
+ getPaginationRowModel,
  getSortedRowModel,
- type SortingState,
  useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
 
-import type {
- FilterOptionsType,
- MusicType,
-} from "@/app/(protected)/media-archive/api/api.types";
+import { GetAllLiveResponse } from "@/app/(protected)/live-channels/api/api.types";
+import { Input } from "@/components/ui/input";
 import {
  Table,
  TableBody,
@@ -22,62 +22,75 @@ import {
  TableHeader,
  TableRow,
 } from "@/components/ui/table";
-import type { SuccessResponse } from "@/lib/fetch";
-import { generatePageNumbers } from "@/lib/generatePageNumbers";
-import { Skeleton } from "../ui/skeleton";
-import TableFooter from "./TableFooter";
-import { MediaArchiveHeader } from "./TableHeader";
+import { useState } from "react";
+import Columns from "./Column";
 
-interface DataTableProps<TData extends MusicType, TValue> {
- columns: ColumnDef<TData, TValue>[];
+import { Skeleton } from "../ui/skeleton";
+import { Plus, Search } from "lucide-react";
+import { Button } from "../ui/button";
+
+interface DataTableProps<TData> {
  data: TData[] | undefined;
- pagination?: SuccessResponse<TData>["paginate"];
- onPageChange: (page: number) => void;
- onPageSizeChange: (pageSize: number) => void;
- currentPage: number;
- currentPageSize: number;
  isLoading?: boolean;
- onAddNew?: () => void;
- onPlaylistChange?: (playlist: string) => void;
- onArtistChange?: (artist: string) => void;
- onMediaTypeChange?: (mediaType: string) => void;
- onGenreChange?: (genre: string) => void;
- filterOptions: FilterOptionsType;
 }
 
-export function DataTable<TData extends MusicType, TValue>({
- columns,
- data,
- pagination,
- onPageChange,
- onPageSizeChange,
+export function LiveChannels<TData extends GetAllLiveResponse[0]>({
+ data = [],
  isLoading,
- currentPage,
- currentPageSize,
- filterOptions,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
  const [sorting, setSorting] = useState<SortingState>([]);
+ const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+ const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+ const [rowSelection, setRowSelection] = useState({});
+
+ const columns = Columns();
 
  const table = useReactTable({
-  data: data || [],
+  data,
   columns,
-  getCoreRowModel: getCoreRowModel(),
-  getSortedRowModel: getSortedRowModel(),
   onSortingChange: setSorting,
-  manualPagination: true,
+  onColumnFiltersChange: setColumnFilters,
+  getCoreRowModel: getCoreRowModel(),
+  getPaginationRowModel: getPaginationRowModel(),
+  getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  onColumnVisibilityChange: setColumnVisibility,
+  onRowSelectionChange: setRowSelection,
   state: {
    sorting,
+   columnFilters,
+   columnVisibility,
+   rowSelection,
   },
  });
 
- const pageNumbers = generatePageNumbers(pagination);
-
  return (
-  <div className="space-y-4">
-   {/* Media Archive Header */}
-   <MediaArchiveHeader filterOptions={filterOptions} />
+  <div className="w-full space-y-8 py-11 px-6">
+   <div className="flex items-center justify-between gap-6  px-6 h-25 bg-background ">
+    {/* Title */}
+    <h1 className="text-[22px] font-PeydaMedium">لایو مجری‌ها</h1>
 
-   {/* Table Content */}
+    <div className="flex items-center gap-4 flex-1 justify-between">
+     <div className="relative w-[229px]">
+      <Search className="absolute right-3 top-[20px] transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+      <Input
+       placeholder="جستجو..."
+       value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+       onChange={(event) =>
+        table.getColumn("name")?.setFilterValue(event.target.value)
+       }
+       className="w-[260px] pr-10 h-10 shadow-none"
+      />
+     </div>
+
+     {/* Add New live Button */}
+     <Button onClick={() => console.log("hi")} className="gap-2 bg-[#7367F0]">
+      <Plus className="h-4 w-4" />
+      افزودن لایو جدید
+     </Button>
+    </div>
+   </div>
+
    <>
     {isLoading && <Skeleton className="h-10 w-full" />}
     <div className="w-full overflow-x-auto min-h-[500px] flex flex-col justify-between overflow-y-hidden">
@@ -87,7 +100,12 @@ export function DataTable<TData extends MusicType, TValue>({
         <TableRow key={headerGroup.id}>
          {headerGroup.headers.map((header) => {
           return (
-           <TableHead key={header.id} className="text-center">
+           <TableHead
+            key={header.id}
+            className={`${
+             header.id === "name" ? "text-right! px-10" : "text-center"
+            }`}
+           >
             {header.isPlaceholder
              ? null
              : flexRender(header.column.columnDef.header, header.getContext())}
@@ -126,7 +144,7 @@ export function DataTable<TData extends MusicType, TValue>({
      </Table>
 
      {/* Pagination Controls */}
-     {pagination && (
+     {/* {pagination && (
       <TableFooter
        pagination={pagination}
        onPageSizeChange={onPageSizeChange}
@@ -135,7 +153,7 @@ export function DataTable<TData extends MusicType, TValue>({
        onPageChange={onPageChange}
        pageNumbers={pageNumbers}
       />
-     )}
+     )} */}
     </div>
    </>
   </div>
