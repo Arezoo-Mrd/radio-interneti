@@ -1,73 +1,141 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import {
- Select,
- SelectContent,
- SelectItem,
- SelectTrigger,
- SelectValue,
-} from "@/components/ui/select";
 
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useGetFilterOptions } from "@/app/(protected)/media-archive/api";
+import { Input } from "@/components/ui/input";
+import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
 import {
  modifyMusicSchema,
  ModifyMusicSchemaType,
 } from "@/schema/media.schema";
-import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
-import ModifyInput from "./ModifyInput";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Edit2, Trash } from "iconsax-react";
+import { Upload } from "lucide-react";
+import Image from "next/image";
+import { useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { EditableAudioType } from ".";
 import DropDown from "./DropDown";
-import { Trash } from "iconsax-react";
+import ModifyInput from "./ModifyInput";
 
 type ItemProps = {
- // TODO:
- music: {
-  artist: string;
-  cover?: File;
-  title: string;
-  duration: string;
-  genre_id: number;
-  play_list_id: number;
-  is_ads: number;
-  id: number;
- };
+ music: EditableAudioType;
 };
 
 const Item = ({ music }: ItemProps) => {
+ const fileInputRef = useRef<HTMLInputElement>(null);
+
+ const [coverPreview, setCoverPreview] = useState<string | null>(
+  music.cover || null
+ );
+
  const {
-  register,
-  formState: { errors, isValid },
+  setValue,
+  watch,
+  handleSubmit,
+  formState: { errors },
  } = useForm<ModifyMusicSchemaType>({
   resolver: zodResolver(modifyMusicSchema),
   defaultValues: {
    artist: music.artist,
-   is_ads: !!music.is_ads,
-   cover: music.cover,
-   genre_id: music.genre_id,
+   is_ads: false,
    title: music.title,
   },
+  mode: "onChange",
  });
 
- const handleInputChange = (field: string, value: string | boolean) => {
-  //   setFormData((prev) => ({ ...prev, [field]: value }));
+ const isValid = watch("title") && watch("artist") && watch("genre_id");
+ const { data: filterOptions } = useGetFilterOptions();
+
+ const handleInputChange = (
+  field: "title" | "artist" | "album" | "cover" | "is_ads",
+  value: string | boolean
+ ) => {
+  setValue(field, value);
+ };
+
+ const handleCoverUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (file) {
+   if (file.type.startsWith("image/")) {
+    setValue("cover", file);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+     const result = e.target?.result as string;
+     setCoverPreview(result);
+    };
+    reader.readAsDataURL(file);
+   } else {
+    toast.error("لطفاً تصویری با فرمت jpg یا jpeg انتخاب کنید");
+   }
+  }
+ };
+
+ const genres = useMemo(() => {
+  return (
+   filterOptions?.data.genres.map((item) => {
+    return {
+     label: item.name,
+     value: item.id.toString(),
+    };
+   }) || []
+  );
+ }, [filterOptions?.data.genres]);
+
+ const onSubmitHandler = (data: ModifyMusicSchemaType) => {
+  console.log("data", data);
+  //   UPDATE
  };
 
  return (
-  <form className="w-full flex flex-col p-5 rounded-xl items-center bg-[#F6F6F6]">
-   <div className="flex w-full items-center pb-4 border-b">
-    <Image
-     src="/images/shahmehr-cover.png"
-     alt="SHAHMEHR - EHSAS"
-     width={160}
-     height={160}
-     className="object-cover w-[160px] rounded-lg overflow-hidden h-[160px]"
-    />
+  <form
+   onSubmit={handleSubmit(onSubmitHandler)}
+   className="w-full flex flex-col p-5 rounded-xl items-center bg-[#F6F6F6]"
+  >
+   <div className="flex w-full items-center gap-7.25 pb-4 border-b">
+    <div className=" w-[160px] rounded-lg overflow-hidden border flex items-center justify-center border-[#CECECE] h-[160px]">
+     {coverPreview ? (
+      <>
+       <div
+        onClick={() => fileInputRef.current?.click()}
+        className="w-full h-full  relative cursor-pointer group "
+       >
+        <Image
+         src={coverPreview || ""}
+         alt={music.title}
+         width={160}
+         height={160}
+         className="object-cover w-full h-full  bg-amber-400 "
+        />
+        <div className="absolute top-0 right-0 left-0 bottom-0 opacity-0 flex items-center justify-center  bg-black/40 group-hover:opacity-100   transition-opacity">
+         <Edit2 size="24" color="#FFFFFF" />
+        </div>
+       </div>
+      </>
+     ) : (
+      <button
+       onClick={() => fileInputRef.current?.click()}
+       type="button"
+       className="flex flex-col cursor-pointer  items-center justify-center gap-2 group-hover:bg-gray-100 w-full h-full transition-colors"
+      >
+       <div className="flex flex-col items-center">
+        <Upload size="20" color="#CECECE" />
+        <span className="text-xs text-[#CECECE] mt-1">افزودن کاور</span>
+       </div>
+      </button>
+     )}
+     <Input
+      className="hidden"
+      ref={fileInputRef}
+      onChange={handleCoverUpload}
+      type="file"
+      accept="image/*"
+     />
+    </div>
 
     <div className="w-full">
      <div className="flex flex-col gap-4">
@@ -76,17 +144,19 @@ const Item = ({ music }: ItemProps) => {
         wrapperClassName="min-w-[332px]"
         id="title"
         label="نام موزیک"
-        value={music.title}
-        onChange={(e) => handleInputChange("musicName", e.target.value)}
+        value={watch("title") || ""}
+        onChange={(e) => handleInputChange("title", e.target.value)}
         inputClassName="w-full"
+        errorMessage={errors.title?.message}
        />
        <ModifyInput
         wrapperClassName="min-w-[332px]"
         id="artist"
         label="نام آرتیست"
-        value={music.artist}
+        value={watch("artist") || ""}
         onChange={(e) => handleInputChange("artist", e.target.value)}
         inputClassName="w-full"
+        errorMessage={errors.artist?.message}
        />
       </div>
       <div className="flex items-end  justify-between w-full">
@@ -96,15 +166,15 @@ const Item = ({ music }: ItemProps) => {
          id="duration"
          label="مدت زمان موزیک"
          value={convertTimeToFarsi(Number(music.duration))}
-         onChange={(e) => handleInputChange("duration", e.target.value)}
+         disabled
         />
         <DropDown
-         onValueChange={(val) => console.log("val", val)}
+         onValueChange={(val) => setValue("genre_id", Number(val))}
          wrapperClassName="min-w-[332px]"
          label="ژانر موزیک"
          id="genre"
          placeholder="انتخاب کنید"
-         items={[]}
+         items={genres}
         />
        </div>
        <div className="flex gap-2 items-center  ">
@@ -133,10 +203,8 @@ const Item = ({ music }: ItemProps) => {
    <div className="mt-6 flex items-center w-full gap-2 justify-start">
     <Checkbox
      id="promotional"
-     checked={!!music.is_ads}
-     onCheckedChange={(checked) =>
-      handleInputChange("isPromotional", !!checked)
-     }
+     checked={watch("is_ads")}
+     onCheckedChange={(checked) => handleInputChange("is_ads", !!checked)}
     />
     <label htmlFor="promotional" className="text-right cursor-pointer">
      این مورد را به عنوان تبلیغاتی ثبت کن

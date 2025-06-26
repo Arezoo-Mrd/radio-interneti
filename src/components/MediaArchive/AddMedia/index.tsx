@@ -6,7 +6,7 @@ import { useStoreMusicMutation } from "@/app/(protected)/media-archive/add-media
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import AddNewMusic from "./Add";
-import EditMusics from "./ModifyMusic";
+import EditMusics, { EditableAudioType } from "./ModifyMusic";
 import Header from "./Header";
 
 const AddMedia = () => {
@@ -15,7 +15,9 @@ const AddMedia = () => {
 
  const { mutate, isPending } = useStoreMusicMutation();
 
- const [showEditMode, setShowEditMode] = useState(true);
+ const [showEditMode, setShowEditMode] = useState(false);
+
+ const [editableAudios, setEditableAudios] = useState<EditableAudioType[]>([]);
 
  const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -43,9 +45,21 @@ const AddMedia = () => {
     music: audioFiles,
    },
    {
-    onSuccess() {
+    onSuccess(data) {
+     console.log("data", data);
      setShowEditMode(true);
      toast.success("عملیات با موفقیت انجام شد!");
+     //  const newEditableAudios = audioFiles.map((file) => ({
+     //   id: file.id,
+     //   artist: "",
+     //   title: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+     //   duration: audioStates[file.id]?.duration || 0,
+     //   cover: null,
+     //  }));
+     //  setEditableAudios(newEditableAudios);
+    },
+    onError() {
+     toast.error("خطایی رخ داده است مجددا تلاش کنید.");
     },
    }
   );
@@ -57,9 +71,7 @@ const AddMedia = () => {
   if (showEditMode) {
    updateMusics();
   } else {
-   //    saveNewMusic();
-   setShowEditMode(true);
-   toast.success("عملیات با موفقیت انجام شد!");
+   saveNewMusic();
   }
  };
 
@@ -68,9 +80,10 @@ const AddMedia = () => {
    <Header
     disabled={audioFiles.length === 0 || isPending}
     saveChanges={saveChanges}
+    isEditMode={showEditMode}
    />
    {showEditMode ? (
-    <EditMusics />
+    <EditMusics editableAudios={editableAudios} />
    ) : (
     <AddNewMusic
      audioFiles={audioFiles}

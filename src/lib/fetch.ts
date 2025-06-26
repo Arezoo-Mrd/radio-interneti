@@ -57,6 +57,10 @@ export const fetchInstance = async <T>(opt: {
   const contentType = response.headers.get("Content-Type");
   const isJson = contentType?.includes("application/json");
 
+  if (!response.ok) {
+   throw new Error("Error");
+  }
+
   if (response.status === 401) {
    deleteCookie("token");
    deleteCookie("user_info");

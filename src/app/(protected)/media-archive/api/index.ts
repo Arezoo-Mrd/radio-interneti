@@ -118,3 +118,10 @@ export const useAddMediasToPlaylistMutation = () => {
   mutationKey: ["add-medias-to-playlist"],
  });
 };
+
+export const useGetFilterOptions = () => {
+ return useQuery({
+  queryKey: ["filter-options"],
+  queryFn: () => getAllFilterData({ token: undefined }),
+ });
+};

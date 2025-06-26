@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 type HeaderProps = {
  disabled: boolean;
  saveChanges: () => any;
+ isEditMode: boolean;
 };
 
-const Header = ({ disabled, saveChanges }: HeaderProps) => {
+const Header = ({ disabled, saveChanges, isEditMode }: HeaderProps) => {
  const router = useRouter();
 
  const goBack = () => {
@@ -31,16 +32,18 @@ const Header = ({ disabled, saveChanges }: HeaderProps) => {
     <Button onClick={goBack} size={"lg"} variant={"outline"} className="h-11">
      بازگشت
     </Button>
-    <Button
-     onClick={saveChanges}
-     size={"lg"}
-     disabled={disabled}
-     className={`h-11 ${
-      disabled ? "bg-[#C3C3C3A6] text-[#7D7D7D]" : "bg-primary-main"
-     }`}
-    >
-     ذخیره و اضافه
-    </Button>
+    {!isEditMode && (
+     <Button
+      onClick={saveChanges}
+      size={"lg"}
+      disabled={disabled}
+      className={`h-11 ${
+       disabled ? "bg-[#C3C3C3A6] text-[#7D7D7D]" : "bg-primary-main"
+      }`}
+     >
+      ذخیره و اضافه
+     </Button>
+    )}
    </div>
   </div>
  );

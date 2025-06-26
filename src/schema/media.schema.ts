@@ -13,12 +13,12 @@ export const modifyMusicSchema = z.object({
  album: z.string().optional(),
  cover: z
   .instanceof(File)
-  .optional()
   .refine(
    (file) =>
     file?.type && ["image/png", "image/jpeg", "image/jpg"].includes(file.type),
    { message: "فرمت کاور می‌بایست شامل png یا jpg یا jpeg باشد" }
-  ),
+  )
+  .optional(),
  genre_id: z.number().min(0, "انتخاب ژانر الزامی است"),
  is_ads: z.boolean(),
 });
