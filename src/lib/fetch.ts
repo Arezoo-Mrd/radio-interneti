@@ -58,7 +58,7 @@ export const fetchInstance = async <T>(opt: {
   const isJson = contentType?.includes("application/json");
 
   if (!response.ok) {
-   throw new Error("Error");
+//    throw new Error(response.statusText);
   }
 
   if (response.status === 401) {
