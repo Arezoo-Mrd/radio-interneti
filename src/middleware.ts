@@ -18,9 +18,9 @@ export default async function middleware(req: NextRequest) {
 
     const cookie = (await cookies()).get("token")?.value;
 
-    //  if (isProtectedRoute && !cookie) {
-    //   response = NextResponse.redirect(new URL("/login", req.nextUrl));
-    //  }
+    if (isProtectedRoute && !cookie) {
+        response = NextResponse.redirect(new URL("/login", req.nextUrl));
+    }
 
     if (isPublicRoute && cookie && !req.nextUrl.pathname.startsWith("/")) {
         response = NextResponse.redirect(new URL("/dashboard", req.nextUrl));

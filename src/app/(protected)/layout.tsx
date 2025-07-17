@@ -11,9 +11,9 @@ export default async function ProtectedLayout({
 }) {
     const user = await auth();
 
-    //  if (!user) {
-    //   redirect("/login");
-    //  }
+    if (!user) {
+        redirect("/login");
+    }
 
     return (
         <SidebarProvider className="flex justify-between gap-6 bg-main-background">
