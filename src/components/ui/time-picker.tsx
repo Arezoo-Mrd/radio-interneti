@@ -1,16 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { Clock } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Clock } from "iconsax-react"
 
 interface PersianTimePickerProps {
   value: string
   onChange: (value: string) => void
   className?: string
+  placeholder?:string
 }
 
 // Convert English numbers to Persian
@@ -26,7 +28,7 @@ const toEnglishNumber = (persianNum: string): string => {
   return persianNum.replace(/[۰-۹]/g, (digit) => englishDigits[persianDigits.indexOf(digit)])
 }
 
-export function PersianTimePicker({ value, onChange, className }: PersianTimePickerProps) {
+export function PersianTimePicker({ value, onChange, className, placeholder }: PersianTimePickerProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   // Parse current time
@@ -56,11 +58,12 @@ console.log({
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <div className="relative">
+        <div className="relative w-full">
           <Input
             value={displayValue}
             onChange={(e) => handleInputChange(e.target.value)}
-            placeholder="زمان را انتخاب کنید"
+
+            placeholder={placeholder}
             className={`text-right pr-10 ${className}`}
             dir="rtl"
           />
@@ -68,10 +71,10 @@ console.log({
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <Clock className="h-4 w-4 text-blue-500" />
+            <Clock color="#7367F0" size={30} variant="Bold" className="h-4 w-4 text-blue-500" />
           </Button>
         </div>
       </PopoverTrigger>

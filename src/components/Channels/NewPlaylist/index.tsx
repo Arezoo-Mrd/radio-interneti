@@ -1,19 +1,42 @@
 "use client"
 
+import AddNewMusic from "@/components/MediaArchive/AddMedia/Add"
 import { PersianDatePicker } from "@/components/ui/date-picker"
-import { Button } from "@/components/ui/button"
-
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-
-import { useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-
-import { Plus, Trash2 } from "lucide-react"
 import { PersianTimePicker } from "@/components/ui/time-picker"
+import { useMultiAudio } from "@/hooks/use-multi-audio"
+import { createPlaylistSchema, CreatePlaylistSchemaType } from "@/schema/playlist.schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRef, useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import Header from "./Header"
 
 export function NewPlaylist() {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { audioFiles, audioStates, addAudioFile, removeAudioFile } =
+  useMultiAudio();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+  
+    Array.from(files).forEach((file) => {
+     if (file.type.startsWith("audio/")) {
+      addAudioFile(file);
+     } else {
+      toast.warning("فرمت فایل صحیح نمی‌باشد.");
+     }
+    });
+  
+    // Reset input
+    if (fileInputRef.current) {
+     fileInputRef.current.value = "";
+    }
+   };
+  
 
   const {
     register,
@@ -22,24 +45,27 @@ export function NewPlaylist() {
     watch,
     control,
     formState: { errors },
-  } = useForm<any>({
-    // resolver: zodResolver(),
+  } = useForm<CreatePlaylistSchemaType>({
+    resolver: zodResolver(createPlaylistSchema),
     defaultValues: {
-      is_public: true,
-      activate: true,
-      presenter: [{ name: "" }],
+      name: "",
+      description: "",
+      start_date: "",
+      end_date: "",
+      start_time: "",
+      end_time: "",
+      active: true,
     },
   })
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "presenter",
-  })
+
 
   const startDate = watch("start_date")
+  const startTime = watch("start_time")
   const endDate = watch("end_date")
-  const isPublic = watch("is_public")
-  const activate = watch("activate")
+  const endTime = watch("end_time")
+
+
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true)
@@ -47,30 +73,38 @@ export function NewPlaylist() {
       console.log("Form data:", data)
       // Here you would typically send the data to your API
       await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate API call
-      alert("رویداد با موفقیت ایجاد شد!")
+      toast.success("پلی‌لیست با موفقیت ایجاد شد!")
     } catch (error) {
       console.error("Error submitting form:", error)
-      alert("خطا در ایجاد رویداد")
+      toast.error("خطا در ایجاد پلی‌لیست")
     } finally {
       setIsSubmitting(false)
     }
   }
 
+  
+
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-right" dir="rtl">
+    <div className="w-full p-6">
+      <Header
+      disabled={isSubmitting}
+      saveChanges={() => onSubmit({})}
+      isEditMode={false}
+      />
+     <div className="w-full  p-4 pb-11 rounded-xl border border-[#F6F6F6] bg-[#FAFAFA]">
+      <h1 className="text-[15px] font-PeydaMedium pb-6 text-right" dir="rtl">
       اطلاعات پلی‌لیست
       </h1>
       <div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Title */}
           <div className="space-y-2">
-            <label htmlFor="title" className="text-right block" dir="rtl">
+            <label htmlFor="title" className="text-right block text-[14px] f" dir="rtl">
             عنوان پلی‌لیست
             </label>
             <Input
               id="title"
-              {...register("title")}
+              {...register("name")}
               placeholder="عنوان موردنظر خود را وارد کنید."
               className="text-right"
               dir="rtl"
@@ -82,30 +116,58 @@ export function NewPlaylist() {
 
           {/* Date Range */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Start Date */}
+
             <div className="space-y-2">
               <label className="text-right block" dir="rtl">
               زمان شروع پلی‌لیست
               </label>
-              <PersianDatePicker
+             <div className="flex gap-2">
+             <PersianDatePicker
                 value={startDate || ""}
                 onChange={(value) => setValue("start_date", value)}
-                placeholder="تاریخ شروع را انتخاب کنید"
+                placeholder="تاریخ موردنظر خود را انتخاب کنید."
               />
                 <PersianTimePicker
-                    value={endDate || ""}
-                    onChange={(value) => setValue("end_date", value)}
+                    value={startTime || ""}
+                    onChange={(value) => setValue("start_time", value)}
+                    placeholder="زمان موردنظر خود را انتخاب کنید."
                    
                 />
-              {/* {errors.start_date && <p className="text-sm text-red-500 text-right">{errors.start_date.message}</p>} */}
+             </div>
+             
             </div>
-
-
+            <div className="space-y-2">
+              <label className="text-right block" dir="rtl">
+              زمان پایان پلی‌لیست
+              </label>
+             <div className="flex gap-2">
+             <PersianDatePicker
+                value={endDate || ""}
+                onChange={(value) => setValue("end_date", value)}
+                placeholder="تاریخ موردنظر خود را انتخاب کنید."
+              />
+             <PersianTimePicker
+                    value={endTime || ""}
+                    onChange={(value) => setValue("end_time", value)}
+                    placeholder="زمان موردنظر خود را انتخاب کنید."
+                   
+                />
+             </div>
+            </div>
           </div>
-
-       
         </form>
       </div>
     </div>
+    <AddNewMusic
+    className="w-full"
+     audioFiles={audioFiles}
+     audioStates={audioStates}
+     handleFileUpload={handleFileUpload}
+     removeAudioFile={removeAudioFile}
+     fileInputRef={fileInputRef}
+     wrapperClassName="pt-6"
+    />
+    </div>
+   
   )
 }

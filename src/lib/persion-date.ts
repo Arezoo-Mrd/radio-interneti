@@ -1,10 +1,15 @@
 // Utility functions for Persian date operations with robust calendar detection
-
+function toEnglishDigits(str: string): string {
+  return str.replace(/[\u06F0-\u06F9\u0660-\u0669]/g, (d) =>
+    String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))
+  );
+}
 export class PersianDateUtils {
+  
   // Test if Persian calendar is supported
   static isPersianCalendarSupported(): boolean {
     try {
-      const testDate = new Date(2024, 0, 1) // January 1, 2024
+      const testDate = new Date() // January 1, 2024
       const formatter = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
         year: "numeric",
         month: "numeric",
@@ -88,10 +93,11 @@ export class PersianDateUtils {
     } catch (error) {
       console.log("Method 1 (Intl Persian) failed:", error)
     }
-
+    
     // Method 2: Try different locale variations
     try {
       const result = this.tryAlternativeLocales(gregorianDate)
+      console.log('ssss',result)
       if (result && !isNaN(result.year) && !isNaN(result.month) && !isNaN(result.day)) {
         return result
       }
@@ -150,9 +156,10 @@ export class PersianDateUtils {
         const dayPart = parts.find((part) => part.type === "day")
 
         if (yearPart && monthPart && dayPart) {
-          const year = Number.parseInt(yearPart.value.replace(/[^\d]/g, ""))
-          const month = Number.parseInt(monthPart.value.replace(/[^\d]/g, "")) - 1
-          const day = Number.parseInt(dayPart.value.replace(/[^\d]/g, ""))
+          const year = Number.parseInt(toEnglishDigits(yearPart.value));
+const month = Number.parseInt(toEnglishDigits(monthPart.value)) - 1;
+const day = Number.parseInt(toEnglishDigits(dayPart.value));
+
 
           // Check if this looks like a Persian date (year should be > 1300)
           if (year > 1300 && year < 1500) {
@@ -173,6 +180,7 @@ export class PersianDateUtils {
     const gYear = gregorianDate.getFullYear()
     const gMonth = gregorianDate.getMonth() + 1
     const gDay = gregorianDate.getDate()
+
 
     // Calculate Julian Day Number
     const a = Math.floor((14 - gMonth) / 12)
@@ -242,7 +250,7 @@ export class PersianDateUtils {
     }
 
     pDay = Math.min(gDay, pMonth < 6 ? 31 : 30)
-
+    
     return {
       year: pYear,
       month: pMonth, // 0-based
