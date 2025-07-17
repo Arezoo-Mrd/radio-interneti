@@ -12,18 +12,13 @@ import { cn } from "@/lib/utils";
 
 import { usePutAssignBulkMediasToPlaylistMutation } from "@/app/(protected)/media-archive/api";
 import { FilterOptionsType } from "@/app/(protected)/media-archive/api/api.types";
-import {
-    addMediasToPlaylistSchema,
-    AddMediasToPlaylistSchemaType,
-} from "@/schema/media.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Checkbox } from "../ui/checkbox";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 
 export function AddMediaDialog({
     closeBtnRef,

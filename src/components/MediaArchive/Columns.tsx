@@ -5,8 +5,10 @@ import type {
 } from "@/app/(protected)/media-archive/api/api.types";
 import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
 import { convertToFaNum } from "@/lib/convertToFaNum";
+import { ADD_MEDIA_STATE } from "@/states/add-media";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit2, Heart, MusicSquareAdd, Sort, Trash } from "iconsax-react";
+import { useSetAtom } from "jotai";
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -20,7 +22,9 @@ const Columns = ({ playlists }: ColumnsProps) => {
   const { mutate: deleteMusic } = useDeleteMusicMutation();
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
+
   const [isShowAddMediaDialog, setIsShowAddMediaDialog] = useState(false);
+  const setAddMediaState = useSetAtom(ADD_MEDIA_STATE);
 
   const columns: ColumnDef<MusicType>[] = [
     {
@@ -193,7 +197,19 @@ const Columns = ({ playlists }: ColumnsProps) => {
             >
               <MusicSquareAdd size={20} color="#7367F0" variant="Outline" />
             </Button>
-            <Button variant="ghost" size="icon" className="bg-[#7367F0]/20 w-6 h-6">
+            <Button onClick={() => {
+              setAddMediaState({
+                showEditMode: true,
+                editableAudios: [{
+                  id: row.original.id.toString(),
+                  artist: row.original.artist || "",
+                  title: row.original.title || "",
+                  duration: row.original.duration || 0,
+                  cover: row.original.cover || null,
+                  musicId: row.original.id,
+                }]
+              })
+            }} variant="ghost" size="icon" className="bg-[#7367F0]/20 w-6 h-6 cursor-pointer">
               <Edit2 size={20} color="#7367F0" variant="Linear" />
             </Button>
             <AddMediaDialog
