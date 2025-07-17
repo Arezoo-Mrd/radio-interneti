@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const addMediasToPlaylistSchema = z.object({
-    playlist_id: z.array(z.number()).min(1, {
+    playlist_id: z.number().min(1, {
         message: "لطفا حداقل یک پلی لیست را انتخاب کنید",
     }),
-    musics: z.number().min(1, {
+    musics: z.array(z.number()).min(1, {
         message: "لطفا حداقل یک موزیک را انتخاب کنید",
     }),
 });

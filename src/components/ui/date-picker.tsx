@@ -13,6 +13,8 @@ interface PersianDatePickerProps {
   onChange: (value: string) => void
   className?: string
   placeholder?: string
+  error?: string
+  disabled?: boolean
 }
 
 // Persian month names
@@ -127,7 +129,7 @@ class PersianCalendar {
 
 
 
-export function PersianDatePicker({ value, onChange, className, placeholder = "تاریخ را انتخاب کنید" }: PersianDatePickerProps) {
+export function PersianDatePicker({ value, onChange, className, placeholder = "تاریخ را انتخاب کنید", error, disabled }: PersianDatePickerProps) {
   const currentPersianDate = PersianDateUtils.getCurrentPersianDate()
 
 
@@ -224,7 +226,7 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "�
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+            className="absolute left-2 top-6 transform -translate-y-1/2 h-6 w-6 p-0"
             onClick={() => setIsOpen(!isOpen)}
           >
             <Calendar variant="Bold" size={30} className="h-4 w-4 text-primary-main" color="#7367F0" />
@@ -235,6 +237,8 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "�
             placeholder={placeholder}
             className={`text-right pr-10 ${className}`}
             dir="rtl"
+            error={error}
+            disabled={disabled}
           />
 
         </div>
@@ -301,8 +305,8 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "�
                         variant={selectedDay === day ? "default" : "ghost"}
                         size="sm"
                         className={`w-full h-full text-sm ${selectedDay === day
-                            ? "bg-primary-button hover:bg-primary-main2 text-white rounded-lg"
-                            : "hover:bg-gray-100"
+                          ? "bg-primary-button hover:bg-primary-main2 text-white rounded-lg"
+                          : "hover:bg-gray-100"
                           }`}
                         onClick={() => handleDateSelect(day)}
                       >

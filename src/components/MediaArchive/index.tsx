@@ -73,7 +73,7 @@ const MediaArchive = ({
         ...(selectedFilters.title && {
             title: selectedFilters.title.toString(),
         }),
-    });
+    }, false);
 
     const currentData = musicResponse?.data || initialData || [];
     const currentPagination = musicResponse?.paginate || initialPagination;

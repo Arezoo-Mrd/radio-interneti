@@ -106,11 +106,11 @@ const putAssignBulkMediasToPlaylist = async (data: AssignBulkMediasToPlaylistReq
     return response;
 };
 
-export const useGetAllMusicQuery = (params?: GetAllMusicQueryParams) => {
+export const useGetAllMusicQuery = (params?: GetAllMusicQueryParams, isEnabled: boolean = false) => {
     return useQuery({
         queryKey: ["all-music", params],
         queryFn: () => getAllMusic({ params }),
-        enabled: false,
+        enabled: isEnabled,
     });
 };
 

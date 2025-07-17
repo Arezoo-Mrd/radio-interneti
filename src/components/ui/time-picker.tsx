@@ -12,7 +12,9 @@ interface PersianTimePickerProps {
   value: string
   onChange: (value: string) => void
   className?: string
-  placeholder?:string
+  placeholder?: string
+  error?: string
+  disabled?: boolean
 }
 
 // Convert English numbers to Persian
@@ -28,18 +30,15 @@ const toEnglishNumber = (persianNum: string): string => {
   return persianNum.replace(/[۰-۹]/g, (digit) => englishDigits[persianDigits.indexOf(digit)])
 }
 
-export function PersianTimePicker({ value, onChange, className, placeholder }: PersianTimePickerProps) {
+export function PersianTimePicker({ value, onChange, className, placeholder, error, disabled }: PersianTimePickerProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   // Parse current time
-  const [hours, minutes, seconds] =value.trim() ? (value?.split(":")).map(Number) : [0,0, 0]
- 
-console.log({
-    hours,
-    minutes, seconds
-})
-  const handleTimeChange = (newHours: number, newMinutes: number, newSeconds: number) => {
-    const timeString = `${newHours?.toString().padStart(2, "0")}:${newMinutes?.toString().padStart(2, "0")}:${newSeconds?.toString().padStart(2, "0")}`
+  const [hours, minutes] = value.trim() ? (value?.split(":")).map(Number) : [0, 0]
+
+
+  const handleTimeChange = (newHours: number, newMinutes: number) => {
+    const timeString = `${newHours?.toString().padStart(2, "0")}:${newMinutes?.toString().padStart(2, "0")}`
     onChange(timeString)
   }
 
@@ -53,7 +52,6 @@ console.log({
   // Generate time options
   const generateHours = () => Array.from({ length: 24 }, (_, i) => i)
   const generateMinutes = () => Array.from({ length: 60 }, (_, i) => i)
-  const generateSeconds = () => Array.from({ length: 60 }, (_, i) => i)
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -66,12 +64,14 @@ console.log({
             placeholder={placeholder}
             className={`text-right pr-10 ${className}`}
             dir="rtl"
+            error={error}
+            disabled={disabled}
           />
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+            className="absolute left-2 top-6 transform -translate-y-1/2 h-6 w-6 p-0"
             onClick={() => setIsOpen(!isOpen)}
           >
             <Clock color="#7367F0" size={30} variant="Bold" className="h-4 w-4 text-blue-500" />
@@ -93,7 +93,7 @@ console.log({
                       variant={hours === hour ? "default" : "ghost"}
                       size="sm"
                       className="w-full justify-center mb-1"
-                      onClick={() => handleTimeChange(hour, minutes, seconds)}
+                      onClick={() => handleTimeChange(hour, minutes)}
                     >
                       {toPersianNumber(hour.toString().padStart(2, "0"))}
                     </Button>
@@ -113,7 +113,7 @@ console.log({
                       variant={minutes === minute ? "default" : "ghost"}
                       size="sm"
                       className="w-full justify-center mb-1"
-                      onClick={() => handleTimeChange(hours, minute, seconds)}
+                      onClick={() => handleTimeChange(hours, minute)}
                     >
                       {toPersianNumber(minute.toString().padStart(2, "0"))}
                     </Button>
@@ -122,26 +122,13 @@ console.log({
               </ScrollArea>
             </div>
 
-            {/* Seconds */}
-            <div className="flex-1">
-              <div className="text-center text-sm font-medium mb-2">ثانیه</div>
-              <ScrollArea className="h-32 border rounded">
-                <div className="p-1">
-                  {generateSeconds().map((second) => (
-                    <Button
-                      key={second}
-                      variant={seconds === second ? "default" : "ghost"}
-                      size="sm"
-                      className="w-full justify-center mb-1"
-                      onClick={() => handleTimeChange(hours, minutes, second)}
-                    >
-                      {toPersianNumber(second.toString().padStart(2, "0"))}
-                    </Button>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
+
           </div>
+        </div>
+        <div className="flex p-2">
+          <Button className="w-full" size="sm" onClick={() => setIsOpen(false)}>
+            تمام
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

@@ -5,7 +5,7 @@ function toEnglishDigits(str: string): string {
   );
 }
 export class PersianDateUtils {
-  
+
   // Test if Persian calendar is supported
   static isPersianCalendarSupported(): boolean {
     try {
@@ -27,7 +27,6 @@ export class PersianDateUtils {
 
       return false
     } catch (error) {
-      console.log("Persian calendar not supported:", error)
       return false
     }
   }
@@ -91,22 +90,22 @@ export class PersianDateUtils {
         return result
       }
     } catch (error) {
-      console.log("Method 1 (Intl Persian) failed:", error)
+
     }
-    
+
     // Method 2: Try different locale variations
     try {
       const result = this.tryAlternativeLocales(gregorianDate)
-      console.log('ssss',result)
+
       if (result && !isNaN(result.year) && !isNaN(result.month) && !isNaN(result.day)) {
         return result
       }
     } catch (error) {
-      console.log("Method 2 (Alternative locales) failed:", error)
+
     }
 
     // Method 3: Use mathematical conversion algorithm
-    console.log("Using mathematical conversion as fallback")
+
     return this.gregorianToPersianMath(gregorianDate)
   }
 
@@ -119,7 +118,7 @@ export class PersianDateUtils {
     })
 
     const parts = formatter.formatToParts(gregorianDate)
-    console.log("Persian calendar parts:", parts)
+
 
     const yearPart = parts.find((part) => part.type === "year")
     const monthPart = parts.find((part) => part.type === "month")
@@ -149,7 +148,7 @@ export class PersianDateUtils {
         })
 
         const parts = formatter.formatToParts(gregorianDate)
-        console.log(`Trying locale ${locale}:`, parts)
+
 
         const yearPart = parts.find((part) => part.type === "year")
         const monthPart = parts.find((part) => part.type === "month")
@@ -157,8 +156,8 @@ export class PersianDateUtils {
 
         if (yearPart && monthPart && dayPart) {
           const year = Number.parseInt(toEnglishDigits(yearPart.value));
-const month = Number.parseInt(toEnglishDigits(monthPart.value)) - 1;
-const day = Number.parseInt(toEnglishDigits(dayPart.value));
+          const month = Number.parseInt(toEnglishDigits(monthPart.value)) - 1;
+          const day = Number.parseInt(toEnglishDigits(dayPart.value));
 
 
           // Check if this looks like a Persian date (year should be > 1300)
@@ -167,7 +166,6 @@ const day = Number.parseInt(toEnglishDigits(dayPart.value));
           }
         }
       } catch (error) {
-        console.log(`Locale ${locale} failed:`, error)
         continue
       }
     }
@@ -250,7 +248,7 @@ const day = Number.parseInt(toEnglishDigits(dayPart.value));
     }
 
     pDay = Math.min(gDay, pMonth < 6 ? 31 : 30)
-    
+
     return {
       year: pYear,
       month: pMonth, // 0-based

@@ -72,7 +72,6 @@ export function AddMediaDialog({
 }
 
 function MediaContainer({
-
     className,
     ref,
     playlists,

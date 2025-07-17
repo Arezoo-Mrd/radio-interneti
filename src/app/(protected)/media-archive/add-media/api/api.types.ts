@@ -1,4 +1,4 @@
-import { AddMediasToPlaylistSchemaType, ModifyMusicSchemaType } from "@/schema/media.schema";
+import { ModifyMusicSchemaType } from "@/schema/media.schema";
 
 export type StoreMusicRequestType = {
     music: File[];
