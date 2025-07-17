@@ -119,9 +119,7 @@ export const useDeleteMusicMutation = () => {
     return useMutation({
         mutationFn: deleteMusic,
         mutationKey: ["delete-music"],
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["all-music"] });
-        },
+
     });
 };
 
