@@ -22,6 +22,8 @@ import { EditableAudioType } from ".";
 import DropDown from "./DropDown";
 import ModifyInput from "./ModifyInput";
 import { useUpdateMusicMutation } from "@/app/(protected)/media-archive/add-media/api";
+import { useAtom, useSetAtom } from "jotai";
+import { ADD_MEDIA_STATE } from "@/states/add-media";
 
 type ItemProps = {
     music: EditableAudioType;
@@ -30,8 +32,11 @@ type ItemProps = {
 
 const Item = ({ music, musicId }: ItemProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const setAddMediaState = useSetAtom(ADD_MEDIA_STATE);
+
 
     const { mutate, isPending } = useUpdateMusicMutation()
+
     const { mutate: deleteMusic, isPending: isDeleting } = useDeleteMusicMutation()
 
     const [coverPreview, setCoverPreview] = useState<string | null>(
@@ -100,6 +105,22 @@ const Item = ({ music, musicId }: ItemProps) => {
             musicId: musicId,
         })
     };
+
+    const deleteMusicHandler = () => {
+        deleteMusic(musicId?.toString() || "", {
+            onSuccess: () => {
+                setAddMediaState((prev) => {
+                    const newEditableAudios = prev.editableAudios.filter((item) => item.musicId !== musicId)
+                    return {
+                        ...prev,
+                        editableAudios: newEditableAudios,
+                        showEditMode: newEditableAudios.length > 0,
+                    }
+                })
+                toast.success("موزیک با موفقیت حذف شد")
+            }
+        })
+    }
 
     return (
         <form
@@ -192,7 +213,7 @@ const Item = ({ music, musicId }: ItemProps) => {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => deleteMusic(musicId?.toString() || "")}
+                                    onClick={deleteMusicHandler}
                                     disabled={isDeleting}
                                     className="bg-[#F11A3B]/20 w-10 h-10 cursor-pointer"
                                 >

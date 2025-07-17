@@ -6,6 +6,7 @@ import type {
 import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
 import { convertToFaNum } from "@/lib/convertToFaNum";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
+import { useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit2, Heart, MusicSquareAdd, Sort, Trash } from "iconsax-react";
 import { useSetAtom } from "jotai";
@@ -13,13 +14,17 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { AddMediaDialog } from "./AddMediaDialog";
+import { toast } from "sonner";
 
 type ColumnsProps = {
   playlists: FilterOptionsType["playlists"];
 };
 
 const Columns = ({ playlists }: ColumnsProps) => {
-  const { mutate: deleteMusic } = useDeleteMusicMutation();
+  const queryClient = useQueryClient();
+  const { mutate: deleteMusic } = useDeleteMusicMutation(
+
+  );
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
 
@@ -185,7 +190,12 @@ const Columns = ({ playlists }: ColumnsProps) => {
               variant="ghost"
               size="icon"
               className="bg-[#F11A3B]/20 w-6 h-6"
-              onClick={() => deleteMusic(row.original.id.toString())}
+              onClick={() => deleteMusic(row.original.id.toString(), {
+                onSuccess: () => {
+                  queryClient.invalidateQueries({ queryKey: ["all-music"] });
+                  toast.success("موزیک با موفقیت حذف شد")
+                }
+              })}
             >
               <Trash size={20} color="#F11A3B" variant="Linear" />
             </Button>
