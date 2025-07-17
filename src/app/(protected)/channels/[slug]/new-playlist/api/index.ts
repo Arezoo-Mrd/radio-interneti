@@ -37,6 +37,8 @@ export const getAllPlaylist = async ({
 const postStorePlaylist = async (data: StorePlaylistType) => {
     const currentToken = await getCookie("token");
     data.activate = true
+    data.start_date = new Date(data.start_date).toISOString().split("T")[0] as unknown as Date
+    data.end_date = new Date(data.end_date).toISOString().split("T")[0] as unknown as Date
 
     const response = await fetchInstance<StorePlaylistResponseType>({
         path: STORE_PLAYLIST,

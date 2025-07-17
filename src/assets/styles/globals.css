@@ -207,3 +207,26 @@
 html {
   scroll-behavior: smooth;
 }
+
+.rmdp-day.rmdp-selected span:not(.highlight) {
+  background: var(--color-primary-main) !important;
+  color: white !important;
+  border-radius: 4px !important;
+}
+
+ .rmdp-day:not(.rmdp-disabled,.rmdp-day-hidden) span:hover  {
+  background: var(--color-primary-main) !important;
+  color: white !important;
+  border-radius: 4px !important;
+  opacity: 0.5 !important;
+ }
+
+
+.rmdp-day.rmdp-today span {
+  background: transparent !important;
+  color: var(--color-primary-main) !important;
+}
+
+.rmdp-day span, .rmdp-week-day {
+  color: #121212 !important;
+}

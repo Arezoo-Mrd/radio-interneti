@@ -88,7 +88,7 @@ const addMediasToPlaylist = async (data: AddMediasToPlaylistSchemaType) => {
     const currentToken = await getCookie("token");
     const response = await fetchInstance<{ message: string }>({
         path: ADD_MEDIAS_TO_PLAYLIST,
-        options: { method: "POST", body: JSON.stringify(data) },
+        options: { method: "PUT", body: JSON.stringify(data) },
         token: currentToken!,
     });
 

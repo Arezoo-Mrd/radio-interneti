@@ -4,13 +4,14 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { DialogTitle, DialogTrigger } from "@radix-ui/react-dialog"
 import { Add } from "iconsax-react"
+import { useParams } from "next/navigation"
 import { useRef } from "react"
 import MediaContent from "./MediaContent"
-import { useParams } from "next/navigation"
 
 const AddMusicToPlayList = ({ playlistName }: { playlistName: string }) => {
     const dialogRef = useRef<HTMLButtonElement>(null)
     const { slug } = useParams()
+
 
     return (
         <>

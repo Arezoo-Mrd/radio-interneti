@@ -3,8 +3,8 @@ import { z } from "zod";
 export const createPlaylistSchema = z.object({
   name: z.string().min(1, "نام پلی‌لیست الزامی است"),
   description: z.string().optional(),
-  start_date: z.string().min(1, "تاریخ شروع الزامی است"),
-  end_date: z.string().min(1, "تاریخ پایان الزامی است"),
+  start_date: z.any(),
+  end_date: z.any(),
   start_time: z.string().min(1, "زمان شروع الزامی است").refine((time) => {
     const [hours, minutes] = time.split(':').map(Number);
     return hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60;
@@ -14,10 +14,6 @@ export const createPlaylistSchema = z.object({
     return hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60;
   }, { message: "زمان پایان معتبر نیست" }),
   activate: z.boolean().optional(),
-}).refine((data) => {
-  const startDate = new Date(data.start_date);
-  const endDate = new Date(data.end_date);
-  return startDate < endDate;
-}, { message: "تاریخ شروع نباید بزرگتر از تاریخ پایان باشد", path: ["end_time"] });
+});
 
 export type CreatePlaylistSchemaType = z.infer<typeof createPlaylistSchema>;

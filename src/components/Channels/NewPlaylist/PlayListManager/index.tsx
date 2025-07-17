@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -22,73 +22,15 @@ import { CSS } from "@dnd-kit/utilities";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { Heart, Calendar, MoreVertical, Plus, Clock, GripVertical, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
+import { useAtom } from "jotai";
+import { useGetAllMusicQuery } from "@/app/(protected)/media-archive/api";
+import { MusicType } from "@/app/(protected)/media-archive/api/api.types";
 
 
-interface PlaylistItem {
-  id: string;
-  title: string;
-  artist: string;
-  likes: number;
-  date: string;
-  duration: string;
-  image: string;
-  liked: boolean;
-}
 
-const initialItems: PlaylistItem[] = [
-  {
-    id: "1",
-    title: "Midnight Dreams",
-    artist: "Luna Rodriguez",
-    likes: 924349,
-    date: "2024/01/15",
-    duration: "3:42",
-    image: "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop",
-    liked: true,
-  },
-  {
-    id: "2",
-    title: "Electric Waves",
-    artist: "The Synthesizers",
-    likes: 678291,
-    date: "2024/01/12",
-    duration: "4:18",
-    image: "https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop",
-    liked: true,
-  },
-  {
-    id: "3",
-    title: "Ocean Breeze",
-    artist: "Coastal Vibes",
-    likes: 445876,
-    date: "2024/01/10",
-    duration: "2:56",
-    image: "https://images.pexels.com/photos/167636/pexels-photo-167636.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop",
-    liked: false,
-  },
-  {
-    id: "4",
-    title: "Neon Nights",
-    artist: "Future Bass",
-    likes: 892134,
-    date: "2024/01/08",
-    duration: "5:23",
-    image: "https://images.pexels.com/photos/1699161/pexels-photo-1699161.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop",
-    liked: true,
-  },
-  {
-    id: "5",
-    title: "Golden Hour",
-    artist: "Ambient Collective",
-    likes: 567890,
-    date: "2024/01/05",
-    duration: "3:14",
-    image: "https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop",
-    liked: true,
-  },
-];
 
-function SortableItem({ item }: { item: PlaylistItem }) {
+function SortableItem({ item }: { item: MusicType }) {
   const {
     attributes,
     listeners,
@@ -132,7 +74,7 @@ function SortableItem({ item }: { item: PlaylistItem }) {
         <div className="flex items-center gap-4">
           <div className="relative group/play">
             <img
-              src={item.image}
+              src={item.cover || "/mic.png"}
               alt={item.title}
               className="w-16 h-16 rounded-xl object-cover shadow-sm"
             />
@@ -140,15 +82,12 @@ function SortableItem({ item }: { item: PlaylistItem }) {
               <Play className="w-6 h-6 text-white fill-current" />
             </div>
           </div>
-          
+
           <div>
             <div className="font-semibold text-gray-800 text-lg">{item.title}</div>
             <div className="text-sm text-gray-500">{item.artist}</div>
             <div className="flex items-center gap-4 mt-1">
-              <div className="flex items-center gap-1 text-xs text-gray-400">
-                <Calendar className="w-3 h-3" />
-                <span>{item.date}</span>
-              </div>
+
               <div className="flex items-center gap-1 text-xs text-gray-400">
                 <Clock className="w-3 h-3" />
                 <span>{item.duration}</span>
@@ -162,14 +101,14 @@ function SortableItem({ item }: { item: PlaylistItem }) {
             <Heart
               className={cn(
                 "w-5 h-5 transition-colors cursor-pointer",
-                item.liked ? "text-red-500 fill-current" : "text-gray-400 hover:text-red-400"
+                item.guest_like ? "text-red-500 fill-current" : "text-gray-400 hover:text-red-400"
               )}
             />
             <span className="text-sm text-gray-600 font-medium">
-              {item.likes.toLocaleString()}
+              {item.guest_like}
             </span>
           </div>
-          
+
           <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
             <MoreVertical className="w-4 h-4 text-gray-400" />
           </button>
@@ -179,14 +118,14 @@ function SortableItem({ item }: { item: PlaylistItem }) {
   );
 }
 
-function PlaylistCard({ item }: { item: PlaylistItem }) {
+function PlaylistCard({ item }: { item: MusicType }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all duration-200">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="relative group/play">
             <img
-              src={item.image}
+              src={item.cover}
               alt={item.title}
               className="w-16 h-16 rounded-xl object-cover shadow-sm"
             />
@@ -194,15 +133,12 @@ function PlaylistCard({ item }: { item: PlaylistItem }) {
               <Play className="w-6 h-6 text-white fill-current" />
             </div>
           </div>
-          
+
           <div>
             <div className="font-semibold text-gray-800 text-lg">{item.title}</div>
             <div className="text-sm text-gray-500">{item.artist}</div>
             <div className="flex items-center gap-4 mt-1">
-              <div className="flex items-center gap-1 text-xs text-gray-400">
-                <Calendar className="w-3 h-3" />
-                <span>{item.date}</span>
-              </div>
+
               <div className="flex items-center gap-1 text-xs text-gray-400">
                 <Clock className="w-3 h-3" />
                 <span>{item.duration}</span>
@@ -216,14 +152,14 @@ function PlaylistCard({ item }: { item: PlaylistItem }) {
             <Heart
               className={cn(
                 "w-5 h-5 transition-colors cursor-pointer",
-                item.liked ? "text-red-500 fill-current" : "text-gray-400 hover:text-red-400"
+                item.guest_like ? "text-red-500 fill-current" : "text-gray-400 hover:text-red-400"
               )}
             />
             <span className="text-sm text-gray-600 font-medium">
-              {item.likes.toLocaleString()}
+              {item.guest_like}
             </span>
           </div>
-          
+
           <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <MoreVertical className="w-4 h-4 text-gray-400" />
           </button>
@@ -233,13 +169,13 @@ function PlaylistCard({ item }: { item: PlaylistItem }) {
   );
 }
 
-function DroppableArea({ children }: { children: React.ReactNode }) {
+function DroppableArea({ children, items }: { children: React.ReactNode, items: MusicType[] }) {
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable",
   });
 
-  const totalDuration = initialItems.reduce((acc, item) => {
-    const [minutes, seconds] = item.duration.split(':').map(Number);
+  const totalDuration = items.reduce((acc: number, item: MusicType) => {
+    const [minutes, seconds] = item.duration.toString().split(':').map(Number);
     return acc + minutes * 60 + seconds;
   }, 0);
 
@@ -273,8 +209,20 @@ function DroppableArea({ children }: { children: React.ReactNode }) {
 }
 
 export default function PlaylistManager() {
-  const [items, setItems] = useState(initialItems);
+  const { data: musics } = useGetAllMusicQuery({}, true)
+  const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+
+
+  const [items, setItems] = useState<MusicType[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (musics) {
+      const selectedMusics = musics?.data.filter((music) => addPlaylistState.musics.some((item) => item.music_id === music.id))
+      setItems(selectedMusics || [])
+    }
+  }, [musics])
+
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -307,7 +255,7 @@ export default function PlaylistManager() {
   }
 
   const activeItem = activeId
-    ? items.find((item) => item.id === activeId)
+    ? items.find((item) => item.id === Number(activeId))
     : null;
 
   return (
@@ -332,7 +280,7 @@ export default function PlaylistManager() {
           modifiers={[restrictToVerticalAxis]}
         >
           {/* Drop Zone */}
-          <DroppableArea>
+          <DroppableArea items={items}>
             <div className="space-y-3">
               <SortableContext items={items} strategy={verticalListSortingStrategy}>
                 {items.map((item) => (
@@ -355,7 +303,7 @@ export default function PlaylistManager() {
         <div className="mt-12">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Recently Added</h2>
           <div className="space-y-3">
-            {initialItems.slice(0, 2).map((item, index) => (
+            {items.slice(0, 2).map((item, index) => (
               <PlaylistCard key={`recent-${index}`} item={item} />
             ))}
           </div>
