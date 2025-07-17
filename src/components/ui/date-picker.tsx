@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import {  ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -97,10 +97,8 @@ class PersianCalendar {
   static persianToJulian(year: number, month: number, day: number): number {
     const epbase = year - 979
     const epyear = epbase >= 0 ? epbase : epbase - 33
-    const aux1 = Math.floor(epyear / 128)
     const aux2 = epyear % 128
-    const aux3 = Math.floor(aux2 / 29)
-    const aux4 = aux2 % 29
+
 
     let julday = 365 * year + Math.floor(epyear / 33) * 8 + Math.floor((aux2 + 3) / 4)
 
@@ -222,7 +220,7 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "Ø
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <div className="relative w-full">
-        <Button
+          <Button
             type="button"
             variant="ghost"
             size="sm"
@@ -238,7 +236,7 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "Ø
             className={`text-right pr-10 ${className}`}
             dir="rtl"
           />
-          
+
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
@@ -247,8 +245,8 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "Ø
             <>
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
-               
-               
+
+
                 <div className="text-center flex items-center gap-0">
                   <Button
                     variant="ghost"
@@ -266,23 +264,23 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "Ø
                   </Button>
                 </div>
                 <div className="flex">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setCurrentMonth(currentMonth < 11 ? currentMonth + 1 : 0)}
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setCurrentMonth(currentMonth > 0 ? currentMonth - 1 : 11)}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCurrentMonth(currentMonth < 11 ? currentMonth + 1 : 0)}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setCurrentMonth(currentMonth > 0 ? currentMonth - 1 : 11)}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
                 </div>
-              
-               
+
+
               </div>
 
               {/* Days of week */}
@@ -302,11 +300,10 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "Ø
                       <Button
                         variant={selectedDay === day ? "default" : "ghost"}
                         size="sm"
-                        className={`w-full h-full text-sm ${
-                          selectedDay === day
+                        className={`w-full h-full text-sm ${selectedDay === day
                             ? "bg-primary-button hover:bg-primary-main2 text-white rounded-lg"
                             : "hover:bg-gray-100"
-                        }`}
+                          }`}
                         onClick={() => handleDateSelect(day)}
                       >
                         {toPersianNumber(day)}
@@ -339,9 +336,8 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "Ø
                   <Button
                     key={month}
                     variant={currentMonth === index ? "default" : "ghost"}
-                    className={`p-3 text-sm ${
-                      currentMonth === index ? "bg-primary-button hover:bg-primary-main2 text-white" : "hover:bg-gray-100"
-                    }`}
+                    className={`p-3 text-sm ${currentMonth === index ? "bg-primary-button hover:bg-primary-main2 text-white" : "hover:bg-gray-100"
+                      }`}
                     onClick={() => handleMonthSelect(index)}
                   >
                     {month}
@@ -372,9 +368,8 @@ export function PersianDatePicker({ value, onChange, className, placeholder = "Ø
                   <Button
                     key={year}
                     variant={currentYear === year ? "default" : "ghost"}
-                    className={`p-3 text-sm ${
-                      currentYear === year ? "bg-primary-button hover:bg-primary-main2 text-white" : "hover:bg-gray-100"
-                    }`}
+                    className={`p-3 text-sm ${currentYear === year ? "bg-primary-button hover:bg-primary-main2 text-white" : "hover:bg-gray-100"
+                      }`}
                     onClick={() => handleYearSelect(year)}
                   >
                     {toPersianNumber(year)}
