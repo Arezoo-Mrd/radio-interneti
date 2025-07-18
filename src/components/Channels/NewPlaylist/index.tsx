@@ -4,7 +4,7 @@ import { useStorePlaylistMutation } from "@/app/(protected)/channels/[slug]/new-
 import { Button } from "@/components/ui/button"
 import { PersianDatePicker } from "@/components/ui/date-picker"
 import { Input } from "@/components/ui/input"
-import { PersianTimePicker } from "@/components/ui/time-picker"
+import TimePicker from "@/components/ui/time-picker"
 import { createPlaylistSchema, CreatePlaylistSchemaType } from "@/schema/playlist.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
@@ -108,7 +108,7 @@ export function NewPlaylist() {
                         placeholder="تاریخ موردنظر خود را انتخاب کنید."
 
                       />
-                      <PersianTimePicker
+                      <TimePicker
                         disabled={!!playlistName}
                         value={startTime || ""}
                         onChange={(value) => setValue("start_time", value)}
@@ -130,7 +130,7 @@ export function NewPlaylist() {
 
                         disabled={!!playlistName}
                       />
-                      <PersianTimePicker
+                      <TimePicker
                         value={endTime}
                         onChange={(value) => setValue("end_time", value)}
                         placeholder="زمان موردنظر خود را انتخاب کنید."

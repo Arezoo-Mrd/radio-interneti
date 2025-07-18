@@ -1,15 +1,14 @@
 import { useAddMediasToPlaylistMutation, useGetAllMusicQuery } from "@/app/(protected)/media-archive/api";
-import { MediaArchiveType, MusicType } from "@/app/(protected)/media-archive/api/api.types";
-import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ClockFading, Loader2 } from "lucide-react";
-import { useAtom } from "jotai";
+import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
+import { useSetAtom } from "jotai";
+import { Loader2 } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElement | null>, playlistId: string | undefined }) => {
-    const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+    const setAddPlaylistState = useSetAtom(ADD_PLAYLIST_STATE)
     const {
         handleSubmit,
         control,

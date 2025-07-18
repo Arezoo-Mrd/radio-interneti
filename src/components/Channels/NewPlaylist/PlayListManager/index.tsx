@@ -26,6 +26,7 @@ import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
 import { useAtom } from "jotai";
 import { useGetAllMusicQuery } from "@/app/(protected)/media-archive/api";
 import { MusicType } from "@/app/(protected)/media-archive/api/api.types";
+import Image from "next/image";
 
 
 
@@ -73,7 +74,7 @@ function SortableItem({ item }: { item: MusicType }) {
       <div className="flex items-center justify-between pl-8">
         <div className="flex items-center gap-4">
           <div className="relative group/play">
-            <img
+            <Image
               src={item.cover || "/mic.png"}
               alt={item.title}
               className="w-16 h-16 rounded-xl object-cover shadow-sm"
@@ -124,8 +125,8 @@ function PlaylistCard({ item }: { item: MusicType }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="relative group/play">
-            <img
-              src={item.cover}
+            <Image
+              src={item.cover || "/mic.png"}
               alt={item.title}
               className="w-16 h-16 rounded-xl object-cover shadow-sm"
             />
