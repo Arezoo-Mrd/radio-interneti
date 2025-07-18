@@ -15,6 +15,8 @@ interface MultiInputProps {
 
 export function MultiInput({ value, onChange, placeholder, className }: MultiInputProps) {
   const [inputValue, setInputValue] = useState("")
+  console.log('inputValue', inputValue)
+
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputValue.trim()) {
@@ -33,12 +35,12 @@ export function MultiInput({ value, onChange, placeholder, className }: MultiInp
   }
 
   return (
-    <div className={`flex flex-wrap gap-2 p-3 border border-gray-200 rounded-md bg-white min-h-[42px] ${className}`}>
+    <div className={`flex flex-wrap w-full gap-2   px-2 pt-2  shadow-xs focus:border-primary-light border-slate-light border-[1px]  rounded-md bg-white  ${className}`}>
       {value.map((tag, index) => (
         <div
           key={index}
 
-          className="flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-800 hover:bg-gray-200"
+          className="flex items-center gap-1 border border-[#C1C1C1] rounded-sm px-3 py-1 bg-[#E5E5E5B2] text-[#292929] hover:bg-gray-200"
         >
           <span className="text-sm">{tag}</span>
           <Button
@@ -52,14 +54,16 @@ export function MultiInput({ value, onChange, placeholder, className }: MultiInp
           </Button>
         </div>
       ))}
+
       <Input
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={value.length === 0 ? placeholder : ""}
-        className="flex-1 border-none shadow-none focus-visible:ring-0 min-w-[120px] text-right"
+        className="flex-1 border-none shadow-none  px-2 py-1.5 focus-visible:ring-0 min-w-[120px] text-right"
         dir="rtl"
+
       />
     </div>
   )

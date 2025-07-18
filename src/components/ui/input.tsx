@@ -12,7 +12,7 @@ function Input({
     ...props
 }: React.ComponentProps<"input"> & { error?: string }) {
     return (
-        <div className="flex flex-col gap-1">
+        <div className="flex w-full flex-col gap-1">
             <input
                 type={type}
                 data-slot="input"
