@@ -3,7 +3,7 @@ import { STORE_LIVE } from "./constants";
 import { fetchInstance } from "@/lib/fetch";
 import { ALL_MUSIC } from "@/app/(protected)/media-archive/api/constants";
 import { getCookie } from "@/lib/cookies";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateLiveSchemaType } from "@/schema/live.schema";
 
 const getStoreLive = async (data: CreateLiveSchemaType) => {
@@ -23,9 +23,13 @@ const getStoreLive = async (data: CreateLiveSchemaType) => {
 
 
 export const useStoreLiveMutation = () => {
+    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: getStoreLive,
         mutationKey: ["store-live"],
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["live-channels"] });
+        }
 
     });
 }
