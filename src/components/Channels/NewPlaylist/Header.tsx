@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 type HeaderProps = {
 
@@ -8,9 +8,10 @@ type HeaderProps = {
 
 const Header = ({ }: HeaderProps) => {
     const router = useRouter();
+    const { slug } = useParams();
 
     const goBack = () => {
-        router.back();
+        router.push(`/channels/${slug}`);
     };
 
     return (

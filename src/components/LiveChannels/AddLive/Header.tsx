@@ -11,8 +11,9 @@ type HeaderProps = {
 const Header = ({ disabled, saveChanges }: HeaderProps) => {
     const router = useRouter();
 
+
     const goBack = () => {
-        router.back();
+        router.push(`/live-channels`);
     };
 
     return (

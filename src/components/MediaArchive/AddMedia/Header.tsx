@@ -15,7 +15,7 @@ const Header = ({ disabled, saveChanges, isEditMode }: HeaderProps) => {
 
     const setAddMediaState = useSetAtom(ADD_MEDIA_STATE);
     const goBack = () => {
-        router.back();
+        router.push("/media-archive");
         setAddMediaState({
             editableAudios: [],
             showEditMode: false,

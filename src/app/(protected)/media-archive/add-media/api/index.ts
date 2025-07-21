@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 const postStoreMusic = async (body: StoreMusicRequestType) => {
     const formData = new FormData();
 
+
     body.music.forEach((file) => {
         formData.append("music", file);
     });
@@ -29,24 +30,14 @@ const postStoreMusic = async (body: StoreMusicRequestType) => {
 
 
 const postUpdateMusic = async (body: UpdateMusicRequestType) => {
-    const formData = new FormData();
 
-    if (body.cover) {
-        formData.append("cover", body.cover);
-    }
-
-    formData.append("title", body.title);
-    formData.append("artist", body.artist);
-    formData.append("album", body.album || "");
-    formData.append("genre_id", body.genre_id.toString());
-    formData.append("is_ads", body.is_ads.toString());
 
     const currentToken = await getCookie("token");
     const response = await fetchInstance({
         path: UPDATE_MUSICS(body.musicId.toString()),
         options: {
             method: "POST",
-            body: formData,
+            body: JSON.stringify(body),
             headers: {
                 "Content-Type": "application/octet-stream",
             },
