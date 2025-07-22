@@ -1,56 +1,35 @@
 "use client";
 
-import { useGetAllMusicQuery } from "@/app/(protected)/media-archive/api";
-import type {
-    FilterOptionsType,
-    MediaArchiveType,
-} from "@/app/(protected)/media-archive/api/api.types";
-import type { SuccessResponse } from "@/lib/fetch";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Skeleton } from "../ui/skeleton";
-import Columns from "./Columns";
-import { DataTable } from "./DataTable";
+import { useGetAllMusicQuery, useGetFilterOptions } from "@/app/(protected)/media-archive/api";
 import { useSelectedFilters } from "@/hooks/use-selected-filter";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
 import { useAtomValue } from "jotai";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { Skeleton } from "../ui/skeleton";
 import AddMedia from "./AddMedia";
+import Columns from "./Columns";
+import { DataTable } from "./DataTable";
 
 type MediaArchiveProps = {
-    initialData?: MediaArchiveType | undefined;
-    initialPagination?: SuccessResponse<MediaArchiveType>["paginate"] | undefined;
-    filterOptions: FilterOptionsType | undefined;
 };
 
 const MediaArchive = ({
-    initialData,
-    initialPagination,
-    filterOptions,
+
 }: MediaArchiveProps) => {
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+
     const searchParams = useSearchParams();
-
-    const currentPage =
-        searchParams.get("page") || initialPagination?.current_page || 1;
-    const currentPageSize =
-        searchParams.get("page_size") || initialPagination?.per_page || 10;
-
-    const columns = Columns({
-        playlists: filterOptions?.playlists || [],
-    });
-    const [page, setPage] = useState(Number(currentPage));
-    const [pageSize, setPageSize] = useState(Number(currentPageSize));
-
-    const addMediaState = useAtomValue(ADD_MEDIA_STATE)
-
+    const { data: filterOptions } = useGetFilterOptions();
     const { selectedFilters } = useSelectedFilters(
-        filterOptions || {
+        filterOptions?.data || {
             playlists: [],
             artists: [],
             genres: [],
         }
     );
 
-    const router = useRouter();
 
     const {
         data: musicResponse,
@@ -58,6 +37,7 @@ const MediaArchive = ({
     } = useGetAllMusicQuery({
         page: page,
         page_size: pageSize,
+
         ...(selectedFilters.artist.id && {
             artist: selectedFilters.artist.name,
         }),
@@ -73,10 +53,30 @@ const MediaArchive = ({
         ...(selectedFilters.title && {
             title: selectedFilters.title.toString(),
         }),
-    }, false);
+    }, true);
 
-    const currentData = musicResponse?.data || initialData || [];
-    const currentPagination = musicResponse?.paginate || initialPagination;
+
+
+    const currentPage =
+        searchParams.get("page") || musicResponse?.paginate?.current_page || 1;
+    const currentPageSize =
+        searchParams.get("page_size") || musicResponse?.paginate?.per_page || 10;
+
+    const columns = Columns({
+        playlists: filterOptions?.data?.playlists || [],
+    });
+
+
+    const addMediaState = useAtomValue(ADD_MEDIA_STATE)
+
+
+
+    const router = useRouter();
+
+
+
+
+    const currentPagination = musicResponse?.paginate || musicResponse?.paginate;
 
     const handlePageChange = (newPage: number) => {
         if (
@@ -106,6 +106,7 @@ const MediaArchive = ({
     //   }
     //  }, [page, pageSize, selectedFilters, refetch]);
 
+
     return (
         <div className="w-full overflow-x-hidden px-6.5">
             {isLoading ? (
@@ -120,9 +121,9 @@ const MediaArchive = ({
                 addMediaState.showEditMode ? <AddMedia /> :
                     <DataTable
                         columns={columns}
-                        data={currentData}
+                        data={musicResponse?.data || []}
                         filterOptions={
-                            filterOptions || {
+                            filterOptions?.data || {
                                 playlists: [],
                                 artists: [],
                                 genres: [],

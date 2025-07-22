@@ -95,7 +95,7 @@ const AddLive = () => {
                 disabled={isPending || !isValidate}
                 saveChanges={saveChanges}
             />
-            <Accordion type="single" collapsible>
+            <Accordion type="single" collapsible={true} defaultValue="item-1">
                 <AccordionItem value="item-1">
                     <AccordionTrigger className="text-[#303030] text-[15px] font-PeydaMedium">اطلاعات لایو</AccordionTrigger>
                     <AccordionContent>

@@ -26,11 +26,16 @@ export const getAllMusic = async ({
     params?: GetAllMusicQueryParams;
     token?: string;
 }) => {
+
     const queryParams = appendQueryParams(params || {});
     const currentToken = token || (await getCookie("token"));
 
+
+    const path = params ? ALL_MUSIC + "?" + queryParams : ALL_MUSIC;
+
+
     const response = await fetchInstance<MediaArchiveType>({
-        path: params ? ALL_MUSIC + "?" + queryParams : ALL_MUSIC,
+        path,
         options: {
             method: "GET",
         },
@@ -109,7 +114,7 @@ const putAssignBulkMediasToPlaylist = async (data: AssignBulkMediasToPlaylistReq
 export const useGetAllMusicQuery = (params?: GetAllMusicQueryParams, isEnabled: boolean = false) => {
     return useQuery({
         queryKey: ["all-music", params],
-        queryFn: () => getAllMusic({ params }),
+        queryFn: () => getAllMusic({ params: params }),
         enabled: isEnabled,
     });
 };
