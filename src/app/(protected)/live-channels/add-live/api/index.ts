@@ -6,8 +6,10 @@ import { getCookie } from "@/lib/cookies";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateLiveSchemaType } from "@/schema/live.schema";
 
-const getStoreLive = async (data: CreateLiveSchemaType) => {
+const postStoreLive = async (data: CreateLiveSchemaType) => {
     const currentToken = (await getCookie("token"));
+    data.start_date = new Date(data.start_date).toISOString().split("T")[0] as unknown as Date
+    data.end_date = new Date(data.end_date).toISOString().split("T")[0] as unknown as Date
 
     const response = await fetchInstance({
         path: STORE_LIVE,
@@ -25,7 +27,7 @@ const getStoreLive = async (data: CreateLiveSchemaType) => {
 export const useStoreLiveMutation = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: getStoreLive,
+        mutationFn: postStoreLive,
         mutationKey: ["store-live"],
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["live-channels"] });
