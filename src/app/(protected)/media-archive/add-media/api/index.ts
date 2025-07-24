@@ -18,9 +18,7 @@ const postStoreMusic = async (body: StoreMusicRequestType) => {
         options: {
             method: "POST",
             body: formData,
-            headers: {
-                "Content-Type": "application/octet-stream",
-            },
+
         },
         token: currentToken!,
     });
@@ -28,19 +26,24 @@ const postStoreMusic = async (body: StoreMusicRequestType) => {
     return response;
 };
 
-
 const postUpdateMusic = async (body: UpdateMusicRequestType) => {
+    const formData = new FormData();
 
+    formData.append("title", body.title);
+    formData.append("artist", body.artist);
+    formData.append("album", body.album || "");
+    formData.append("cover", body.cover || "");
+    formData.append("is_ads", body.is_ads ? "1" : "0");
+    formData.append("musicId", body.musicId.toString());
+    formData.append("genre_id", body.genre_id.toString());
 
     const currentToken = await getCookie("token");
+
     const response = await fetchInstance({
         path: UPDATE_MUSICS(body.musicId.toString()),
         options: {
             method: "POST",
-            body: JSON.stringify(body),
-            headers: {
-                "Content-Type": "application/octet-stream",
-            },
+            body: formData,
         },
         token: currentToken!,
     });

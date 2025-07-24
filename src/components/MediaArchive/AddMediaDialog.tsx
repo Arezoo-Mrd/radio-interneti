@@ -119,6 +119,8 @@ function MediaContainer({
             playlist_id: field?.playlistId,
         }));
 
+
+
         assignBulkMediasToPlaylist({
             assign
         }, {
@@ -126,8 +128,10 @@ function MediaContainer({
                 toast.success("موزیک با موفقیت افزوده شد");
                 ref.current?.click();
             },
-            onError: () => {
-                toast.error("موزیک با موفقیت افزوده شد");
+            onError: (error) => {
+                toast.error(error.message);
+
+
             },
         });
     };

@@ -62,6 +62,8 @@ const MediaArchive = ({
     const currentPageSize =
         searchParams.get("page_size") || musicResponse?.paginate?.per_page || 10;
 
+
+    console.log('filterOptions', filterOptions?.data.playlists)
     const columns = Columns({
         playlists: filterOptions?.data?.playlists || [],
     });

@@ -51,7 +51,7 @@ const AddMedia = () => {
                     const newEditableAudios = audioFiles.map((file) => ({
                         id: file.id,
                         artist: "",
-                        title: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+                        title: file.name.replace(/\.[^/.]+$/, ""),
                         duration: audioStates[file.id]?.duration || 0,
                         cover: null,
                         musicId: data?.data.id,
@@ -61,8 +61,8 @@ const AddMedia = () => {
                         showEditMode: true,
                     })
                 },
-                onError() {
-                    toast.error("خطایی رخ داده است مجددا تلاش کنید.");
+                onError(error) {
+                    toast.error(error.message);
                 },
             }
         );
@@ -80,6 +80,7 @@ const AddMedia = () => {
                 disabled={audioFiles.length === 0 || isPending}
                 saveChanges={saveChanges}
                 isEditMode={addMediaState.showEditMode}
+                isLoading={isPending}
             />
             {addMediaState.showEditMode ? (
                 <EditMusics editableAudios={addMediaState.editableAudios} />

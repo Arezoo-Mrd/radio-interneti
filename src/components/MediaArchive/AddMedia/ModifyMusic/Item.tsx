@@ -103,6 +103,13 @@ const Item = ({ music, musicId }: ItemProps) => {
         mutate({
             ...data,
             musicId: musicId,
+        }, {
+            onSuccess: () => {
+                toast.success("موزیک با موفقیت ویرایش شد")
+            },
+            onError: (error) => {
+                toast.error(error.message)
+            }
         })
     };
 
@@ -122,51 +129,62 @@ const Item = ({ music, musicId }: ItemProps) => {
         })
     }
 
+
+    console.log('errors', errors)
     return (
         <form
             onSubmit={handleSubmit(onSubmitHandler)}
             className="w-full flex flex-col p-5 rounded-xl items-center bg-[#F6F6F6]"
         >
             <div className="flex w-full items-center gap-7.25 pb-4 border-b">
-                <div className=" w-[160px] rounded-lg overflow-hidden border  border-[#CECECE] h-[160px]">
-                    {coverPreview ? (
-                        <>
-                            <div
-                                onClick={() => fileInputRef.current?.click()}
-                                className="w-full h-full relative cursor-pointer group "
-                            >
-                                <Image
-                                    src={coverPreview || ""}
-                                    alt={music.title}
-                                    className="object-cover  w-[160px] h-[160px] "
-                                    width={160}
-                                    height={160}
-                                    quality={100}
-                                />
-                                <div className="absolute top-0 right-0 left-0 bottom-0 opacity-0 flex items-center justify-center  bg-black/40 group-hover:opacity-100   transition-opacity">
-                                    <Edit2 size="24" color="#FFFFFF" />
+                <div className="flex flex-col">
+
+                    <div className=" w-[160px] rounded-lg overflow-hidden border  border-[#CECECE] h-[160px]">
+                        {coverPreview ? (
+                            <>
+                                <div
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="w-full h-full relative cursor-pointer group "
+                                >
+                                    <Image
+                                        src={coverPreview || ""}
+                                        alt={music.title}
+                                        className="object-cover  w-[160px] h-[160px] "
+                                        width={160}
+                                        height={160}
+                                        quality={100}
+                                    />
+                                    <div className="absolute top-0 right-0 left-0 bottom-0 opacity-0 flex items-center justify-center  bg-black/40 group-hover:opacity-100   transition-opacity">
+                                        <Edit2 size="24" color="#FFFFFF" />
+                                    </div>
                                 </div>
-                            </div>
-                        </>
-                    ) : (
-                        <button
-                            onClick={() => fileInputRef.current?.click()}
-                            type="button"
-                            className="flex flex-col cursor-pointer  items-center justify-center gap-2 group-hover:bg-gray-100 w-full h-full transition-colors"
-                        >
-                            <div className="flex w-full flex-col items-center">
-                                <Upload size="20" color="#CECECE" />
-                                <span className="text-xs text-[#CECECE] mt-1">افزودن کاور</span>
-                            </div>
-                        </button>
-                    )}
-                    <Input
-                        className="hidden"
-                        ref={fileInputRef}
-                        onChange={handleCoverUpload}
-                        type="file"
-                        accept="image/*"
-                    />
+                            </>
+                        ) : (
+                            <>
+
+                                <button
+                                    onClick={() => fileInputRef.current?.click()}
+                                    type="button"
+                                    className="flex flex-col cursor-pointer  items-center justify-center gap-2 group-hover:bg-gray-100 w-full h-full transition-colors"
+                                >
+                                    <div className="flex w-full flex-col items-center">
+                                        <Upload size="20" color="#CECECE" />
+                                        <span className="text-xs text-[#CECECE] mt-1">افزودن کاور</span>
+                                    </div>
+                                </button>
+                            </>
+                        )}
+                        <Input
+                            className="hidden"
+                            ref={fileInputRef}
+                            onChange={handleCoverUpload}
+                            type="file"
+                            accept="image/*"
+                        />
+
+
+                    </div>
+                    {errors.cover && <p className=" text-red-500 text-xs">{errors.cover.message}</p>}
                 </div>
 
                 <div className="w-full">
@@ -191,7 +209,7 @@ const Item = ({ music, musicId }: ItemProps) => {
                                 errorMessage={errors.artist?.message}
                             />
                         </div>
-                        <div className="flex items-end  justify-between w-full">
+                        <div className="flex items-end gap-1 justify-between w-full">
                             <div className="flex items-center  gap-4.5">
                                 <ModifyInput
                                     wrapperClassName="min-w-[332px]"

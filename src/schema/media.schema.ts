@@ -19,6 +19,12 @@ export const modifyMusicSchema = z.object({
             (file) =>
                 file?.type && ["image/png", "image/jpeg", "image/jpg"].includes(file.type),
             { message: "فرمت کاور می‌بایست شامل png یا jpg یا jpeg باشد" }
+        ).refine(
+            (file) => {
+                if (!file) return true;
+                return file.size <= 512 * 1024;
+            },
+            { message: "حجم کاور نباید بیشتر از 512 کیلو بایت باشد" }
         )
         .optional(),
     genre_id: z.number().min(0, "انتخاب ژانر الزامی است"),

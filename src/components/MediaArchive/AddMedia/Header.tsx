@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
+import { Loader2 } from "lucide-react";
 import { useSetAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,9 +9,10 @@ type HeaderProps = {
     disabled: boolean;
     saveChanges: () => any;
     isEditMode: boolean;
+    isLoading: boolean;
 };
 
-const Header = ({ disabled, saveChanges, isEditMode }: HeaderProps) => {
+const Header = ({ disabled, saveChanges, isEditMode, isLoading }: HeaderProps) => {
     const router = useRouter();
 
     const setAddMediaState = useSetAtom(ADD_MEDIA_STATE);
@@ -45,10 +47,10 @@ const Header = ({ disabled, saveChanges, isEditMode }: HeaderProps) => {
                         onClick={saveChanges}
                         size={"lg"}
                         disabled={disabled}
-                        className={`h-11 ${disabled ? "bg-[#C3C3C3A6] text-[#7D7D7D]" : "bg-primary-main"
+                        className={`h-11 w-32 ${disabled ? "bg-[#C3C3C3A6] text-[#7D7D7D]" : "bg-primary-main"
                             }`}
                     >
-                        ذخیره و اضافه
+                        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "ذخیره و اضافه"}
                     </Button>
                 )}
             </div>

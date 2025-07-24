@@ -29,21 +29,18 @@ export const fetchInstance = async <T>(opt: {
   isRetry?: boolean;
   baseUrl?: string;
   token?: string;
-  isFormData?: boolean;
 }): Promise<SuccessResponse<T> | undefined> => {
   const token = opt.token || (await getCookie("token"));
 
-  const body = opt.isFormData
-    ? convertToFormData(opt.options.body as string)
-    : opt.options.body;
+  const isFormData = opt.options.body instanceof FormData;
 
   const modifiedOptions: RequestInit = {
     ...opt.options,
-    body,
     headers: {
       ...(opt.options.headers || {}),
       Accept: "application/json",
-      ...(opt.isFormData ? {} : { "Content-Type": "application/json" }),
+
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       Authorization: `Bearer ${token}`,
     },
   };
