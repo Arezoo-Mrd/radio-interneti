@@ -1,14 +1,16 @@
 "use client"
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type HeaderProps = {
     disabled: boolean;
     saveChanges: () => any;
+    isLoading: boolean;
 };
 
-const Header = ({ disabled, saveChanges }: HeaderProps) => {
+const Header = ({ disabled, saveChanges, isLoading }: HeaderProps) => {
     const router = useRouter();
 
 
@@ -38,10 +40,13 @@ const Header = ({ disabled, saveChanges }: HeaderProps) => {
                     onClick={saveChanges}
                     size={"lg"}
                     disabled={disabled}
-                    className={`h-11 ${disabled ? "bg-[#C3C3C3A6] text-[#7D7D7D]" : "bg-primary-main"
+
+                    className={`h-11 w-32 ${disabled ? "bg-[#C3C3C3A6] text-[#7D7D7D]" : "bg-primary-main"
                         }`}
                 >
-                    ذخیره و اضافه
+                    {
+                        isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "ذخیره و اضافه"
+                    }
                 </Button>
 
             </div>

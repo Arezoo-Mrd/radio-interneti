@@ -94,6 +94,7 @@ const AddLive = () => {
             <Header
                 disabled={isPending || !isValidate}
                 saveChanges={saveChanges}
+                isLoading={isPending}
             />
             <Accordion type="single" collapsible={true} defaultValue="item-1">
                 <AccordionItem value="item-1">
