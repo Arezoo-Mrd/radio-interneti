@@ -87,8 +87,8 @@ export const useStorePlaylistMutation = () => {
         onSuccess() {
             toast.success("پلی‌لیست با موفقیت ثبت شد");
         },
-        onError() {
-            toast.error("خطا در ثبت پلی‌لیست");
+        onError(error) {
+            toast.error(error.message);
         },
     });
 }

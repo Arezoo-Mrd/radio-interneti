@@ -24,13 +24,16 @@ import ModifyInput from "./ModifyInput";
 import { useUpdateMusicMutation } from "@/app/(protected)/media-archive/add-media/api";
 import { useAtom, useSetAtom } from "jotai";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
+import { FilterOptionsType } from "@/app/(protected)/media-archive/api/api.types";
 
 type ItemProps = {
     music: EditableAudioType;
     musicId: number | undefined;
+    genreId: number | undefined;
+    filterOptions: FilterOptionsType | undefined;
 };
 
-const Item = ({ music, musicId }: ItemProps) => {
+const Item = ({ music, musicId, filterOptions }: ItemProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const setAddMediaState = useSetAtom(ADD_MEDIA_STATE);
 
@@ -54,14 +57,17 @@ const Item = ({ music, musicId }: ItemProps) => {
             artist: music.artist,
             is_ads: false,
             title: music.title,
+            genre_id: music.genreId || undefined,
+
         },
         mode: "onChange",
     });
 
 
 
+
     const isValid = watch("title") && watch("artist") && watch("genre_id");
-    const { data: filterOptions } = useGetFilterOptions();
+
 
     const handleInputChange = (
         field: "title" | "artist" | "album" | "cover" | "is_ads",
@@ -87,16 +93,25 @@ const Item = ({ music, musicId }: ItemProps) => {
         }
     };
 
+    const closeEditMode = () => {
+        setAddMediaState((prev) => {
+            return {
+                ...prev,
+                showEditMode: false,
+            }
+        })
+    }
+
     const genres = useMemo(() => {
         return (
-            filterOptions?.data.genres.map((item) => {
+            filterOptions?.genres.map((item) => {
                 return {
                     label: item.name,
                     value: item.id.toString(),
                 };
             }) || []
         );
-    }, [filterOptions?.data.genres]);
+    }, [filterOptions?.genres]);
 
     const onSubmitHandler = (data: ModifyMusicSchemaType) => {
         if (!musicId) return;
@@ -106,12 +121,14 @@ const Item = ({ music, musicId }: ItemProps) => {
         }, {
             onSuccess: () => {
                 toast.success("موزیک با موفقیت ویرایش شد")
+                closeEditMode()
             },
             onError: (error) => {
                 toast.error(error.message)
             }
         })
     };
+    console.log('music', music)
 
     const deleteMusicHandler = () => {
         deleteMusic(musicId?.toString() || "", {
@@ -130,7 +147,11 @@ const Item = ({ music, musicId }: ItemProps) => {
     }
 
 
-    console.log('errors', errors)
+    const defaultGenre = useMemo(() => {
+        return genres.find((item) => item.value === music.genreId?.toString())
+    }, [genres, music.genreId])
+
+
     return (
         <form
             onSubmit={handleSubmit(onSubmitHandler)}
@@ -225,6 +246,7 @@ const Item = ({ music, musicId }: ItemProps) => {
                                     id="genre"
                                     placeholder="انتخاب کنید"
                                     items={genres}
+                                    defaultValue={defaultGenre}
                                     errorMessage={errors.genre_id?.message}
                                 />
                             </div>

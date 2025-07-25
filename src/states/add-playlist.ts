@@ -3,11 +3,10 @@ import { atom } from "jotai";
 
 export const ADD_PLAYLIST_STATE = atom<{
     showChangePosition: boolean;
-    musics: {
-        music_id: number,
-
-    }[]
+    musics: { music_id: number, position: number }[]
+    playListId: number
 }>({
     showChangePosition: false,
     musics: [],
+    playListId: -1
 });

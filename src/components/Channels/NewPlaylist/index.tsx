@@ -20,7 +20,7 @@ import PlaylistManager from "./PlayListManager"
 export function NewPlaylist() {
   const { slug } = useParams()
   const { mutate: storePlaylist, isPending: isPendingStorePlaylist } = useStorePlaylistMutation()
-  const [playlistName, setPlaylistName] = useState<string | null>(null)
+  const [playlistData, setPlaylistData] = useState<{ name: string, id: number } | null>(null)
 
 
   const {
@@ -60,7 +60,11 @@ export function NewPlaylist() {
       channel_playlist: Number(slug),
     }, {
       onSuccess: (data) => {
-        data && setPlaylistName(data.data.name)
+        data && setPlaylistData({
+          name: data.data.name,
+          id: data.data.id,
+        })
+
       }
     })
   }
@@ -85,7 +89,7 @@ export function NewPlaylist() {
                   </label>
                   <Input
                     id="title"
-                    disabled={!!playlistName}
+                    disabled={!!playlistData?.name}
                     {...register("name")}
                     placeholder="عنوان موردنظر خود را وارد کنید."
                     className="text-right"
@@ -102,14 +106,14 @@ export function NewPlaylist() {
                     </label>
                     <div className="flex gap-2">
                       <PersianDatePicker
-                        disabled={!!playlistName}
+                        disabled={!!playlistData?.name}
                         value={startDate}
                         setValue={(value) => setValue("start_date", value)}
                         placeholder="تاریخ موردنظر خود را انتخاب کنید."
 
                       />
                       <TimePicker
-                        disabled={!!playlistName}
+                        disabled={!!playlistData?.name}
                         value={startTime || ""}
                         onChange={(value) => setValue("start_time", value)}
                         placeholder="زمان موردنظر خود را انتخاب کنید."
@@ -128,14 +132,14 @@ export function NewPlaylist() {
                         setValue={(value) => setValue("end_date", value)}
                         placeholder="تاریخ موردنظر خود را انتخاب کنید."
 
-                        disabled={!!playlistName}
+                        disabled={!!playlistData?.name}
                       />
                       <TimePicker
                         value={endTime}
                         onChange={(value) => setValue("end_time", value)}
                         placeholder="زمان موردنظر خود را انتخاب کنید."
                         error={errors.end_time?.message}
-                        disabled={!!playlistName}
+                        disabled={!!playlistData?.name}
                       />
                     </div>
                   </div>
@@ -144,7 +148,7 @@ export function NewPlaylist() {
                 <Button
                   type="submit"
                   size={"lg"}
-                  disabled={isPendingStorePlaylist || !!playlistName}
+                  disabled={isPendingStorePlaylist || !!playlistData?.name}
                   className={`h-11 w-[200px] ${isPendingStorePlaylist ? "bg-[#C3C3C3A6] text-[#7D7D7D]" : "bg-primary-main"
                     }`}
                 >
@@ -154,7 +158,7 @@ export function NewPlaylist() {
               </form>
             </div>
           </div>
-          {playlistName && <AddMusicToPlayList playlistName={playlistName} />}
+          {playlistData?.name && <AddMusicToPlayList playlistName={playlistData.name} playlistId={playlistData.id} />}
         </>
       }
 

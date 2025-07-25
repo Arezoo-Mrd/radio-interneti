@@ -8,7 +8,7 @@ import { useParams } from "next/navigation"
 import { useRef } from "react"
 import MediaContent from "./MediaContent"
 
-const AddMusicToPlayList = ({ playlistName }: { playlistName: string }) => {
+const AddMusicToPlayList = ({ playlistName, playlistId }: { playlistName: string, playlistId: number }) => {
     const dialogRef = useRef<HTMLButtonElement>(null)
     const { slug } = useParams()
 
@@ -21,7 +21,7 @@ const AddMusicToPlayList = ({ playlistName }: { playlistName: string }) => {
                     <DialogHeader className=" flex justify-start w-full text-right border-b! border-[#EDEDED] pb-4">
                         <DialogTitle>افزودن موزیک به پلی‌لیست {playlistName}</DialogTitle>
                     </DialogHeader>
-                    <MediaContent ref={dialogRef} playlistId={slug as string || ""} />
+                    <MediaContent ref={dialogRef} playlistId={playlistId} />
                 </DialogContent>
             </Dialog>
 

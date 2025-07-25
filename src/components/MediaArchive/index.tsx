@@ -3,9 +3,9 @@
 import { useGetAllMusicQuery, useGetFilterOptions } from "@/app/(protected)/media-archive/api";
 import { useSelectedFilters } from "@/hooks/use-selected-filter";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import AddMedia from "./AddMedia";
 import Columns from "./Columns";
@@ -48,7 +48,7 @@ const MediaArchive = ({
             playlist_id: Number(selectedFilters.playlist.id),
         }),
         ...(selectedFilters.mediaType.id && {
-            media_type: Number(selectedFilters.mediaType.id),
+            is_ads: Number(selectedFilters.mediaType.id) === 1 ? 1 : 0,
         }),
         ...(selectedFilters.title && {
             title: selectedFilters.title.toString(),
@@ -62,14 +62,21 @@ const MediaArchive = ({
     const currentPageSize =
         searchParams.get("page_size") || musicResponse?.paginate?.per_page || 10;
 
-
-    console.log('filterOptions', filterOptions?.data.playlists)
     const columns = Columns({
         playlists: filterOptions?.data?.playlists || [],
     });
 
 
-    const addMediaState = useAtomValue(ADD_MEDIA_STATE)
+    const [addMediaState, setAddMediaState] = useAtom(ADD_MEDIA_STATE)
+
+    useEffect(() => {
+        return () => {
+            setAddMediaState({
+                ...addMediaState,
+                showEditMode: false,
+            })
+        }
+    }, [])
 
 
 

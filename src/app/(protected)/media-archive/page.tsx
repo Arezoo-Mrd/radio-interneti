@@ -4,8 +4,6 @@ export default async function MediaArchivePage() {
 
 
     return (
-        <MediaArchive
-
-        />
+        <MediaArchive />
     );
 }

@@ -29,7 +29,7 @@ export type MediaArchiveType = MusicType[];
 export type GetAllMusicQueryParams = {
     title?: string;
     artist?: string;
-    is_ads?: boolean;
+    is_ads?: 0 | 1;
     genre_id?: number;
     media_type?: number;
     playlist_id?: number;

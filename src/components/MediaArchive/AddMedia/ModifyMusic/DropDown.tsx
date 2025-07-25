@@ -16,6 +16,7 @@ type DropDownProps = {
     wrapperClassName?: string;
     triggerClassName?: string;
     errorMessage?: string
+    defaultValue?: { label: string; value: string }
 };
 
 const DropDown = ({
@@ -27,13 +28,14 @@ const DropDown = ({
     id,
     wrapperClassName,
     triggerClassName,
+    defaultValue
 }: DropDownProps) => {
     return (
         <div className={twMerge("space-y-2 ", wrapperClassName)}>
             <label htmlFor={id} className="text-right block">
                 {label}
             </label>
-            <Select onValueChange={onValueChange}>
+            <Select onValueChange={onValueChange} defaultValue={defaultValue?.value}>
                 <SelectTrigger
                     className={twMerge(
                         "bg-transparent w-full h-10! mb-0 shadow-none border-[#CECECE]",

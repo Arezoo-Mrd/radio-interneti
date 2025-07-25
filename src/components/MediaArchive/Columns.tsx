@@ -217,6 +217,7 @@ const Columns = ({ playlists }: ColumnsProps) => {
                   duration: row.original.duration || 0,
                   cover: row.original.cover || null,
                   musicId: row.original.id,
+                  genreId: row.original.genre.id,
                 }]
               })
             }} variant="ghost" size="icon" className="bg-[#7367F0]/20 w-6 h-6 cursor-pointer">

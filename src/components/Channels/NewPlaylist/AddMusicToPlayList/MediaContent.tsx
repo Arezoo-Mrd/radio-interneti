@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElement | null>, playlistId: string | undefined }) => {
+const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElement | null>, playlistId: number }) => {
     const setAddPlaylistState = useSetAtom(ADD_PLAYLIST_STATE)
     const {
         handleSubmit,
@@ -53,6 +53,7 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
                 setAddPlaylistState({
                     showChangePosition: true,
                     musics,
+                    playListId: playlistId
                 })
             },
         });

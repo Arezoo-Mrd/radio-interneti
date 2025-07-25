@@ -11,9 +11,9 @@ export const defaultFilterOption: BaseFilterOptionType = {
 };
 
 const mediaTypes: BaseFilterOptionType[] = [
-    { id: 0, name: "همه" },
-    { id: 1, name: "آهنگ" },
-    { id: 2, name: "تبلیغ" },
+    { id: -1, name: "همه" },
+    { id: 0, name: "آهنگ" },
+    { id: 1, name: "تبلیغ" },
 ];
 
 export function useSelectedFilters(filterOptions: FilterOptionsType) {

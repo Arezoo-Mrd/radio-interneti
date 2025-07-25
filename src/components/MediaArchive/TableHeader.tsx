@@ -55,7 +55,7 @@ export function MediaArchiveHeader({ filterOptions }: MediaArchiveHeaderProps) {
                         onChange={(e) => {
                             setTimeout(() => {
                                 handleFilterSelect?.(e.target.value, "title");
-                            }, 700);
+                            }, 2000);
                         }}
                         className="pr-10 text-right h-10"
                     />

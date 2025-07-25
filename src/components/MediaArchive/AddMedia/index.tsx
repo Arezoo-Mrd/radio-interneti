@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import AddNewMusic from "./Add";
 import Header from "./Header";
 import EditMusics from "./ModifyMusic";
+import { useGetFilterOptions } from "@/app/(protected)/media-archive/api";
 
 
 const AddMedia = () => {
@@ -17,6 +18,7 @@ const AddMedia = () => {
         useMultiAudio();
 
     const { mutate, isPending } = useStoreMusicMutation();
+    const { data: filterOptions } = useGetFilterOptions();
 
     const [addMediaState, setAddMediaState] = useAtom(ADD_MEDIA_STATE);
 
@@ -55,6 +57,8 @@ const AddMedia = () => {
                         duration: audioStates[file.id]?.duration || 0,
                         cover: null,
                         musicId: data?.data.id,
+                        // genreId: data?.data.genre_id,
+
                     }));
                     setAddMediaState({
                         editableAudios: newEditableAudios,
@@ -83,7 +87,7 @@ const AddMedia = () => {
                 isLoading={isPending}
             />
             {addMediaState.showEditMode ? (
-                <EditMusics editableAudios={addMediaState.editableAudios} />
+                <EditMusics editableAudios={addMediaState.editableAudios} filterOptions={filterOptions?.data} />
             ) : (
                 <AddNewMusic
                     audioFiles={audioFiles}
