@@ -48,6 +48,7 @@ export function Channels<TData extends PlaylistResponseType[0]>({
 
   const { slug } = useParams();
 
+
   const columns = Columns();
 
   const table = useReactTable({
@@ -89,7 +90,7 @@ export function Channels<TData extends PlaylistResponseType[0]>({
           </div>
 
           {/* Add New live Button */}
-          <Button onClick={() => console.log("hi")} className="gap-2 flex items-center bg-[#7367F0]">
+          <Button className="gap-2 flex items-center bg-[#7367F0]">
             <Link href={`/channels/${slug}/new-playlist`} className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
               افزودن پلی‌لیست جدید

@@ -1,14 +1,8 @@
+import { DashboardInfo } from "@/app/(protected)/dashboard/api";
 import { Heart } from "iconsax-react";
 
-const EmployeeList = () => {
-    const employees = [
-        { name: 'Bi Ehsas (شادمهر عقیلی)', like: '۹۲۳۴۹' },
-        { name: 'Bi Ehsas (شادمهر عقیلی)', like: '۹۲۳۴۹' },
-        { name: 'Bi Ehsas (شادمهر عقیلی)', like: '۹۲۳۴۹' },
-        { name: 'Bi Ehsas (شادمهر عقیلی)', like: '۹۲۳۴۹' },
-        { name: 'Bi Ehsas (شادمهر عقیلی)', like: '۹۲۳۴۹' },
+const EmployeeList = ({ dashboardInfo }: { dashboardInfo: DashboardInfo | undefined }) => {
 
-    ];
     return (
         <div className="bg-white rounded-lg w-full shadow-sm md:h-[354px]">
             <div className="p-6 ">
@@ -16,10 +10,10 @@ const EmployeeList = () => {
             </div>
             <div className="p-6">
                 <div className="space-y-7">
-                    {employees.map((employee, index) => (
+                    {dashboardInfo && dashboardInfo?.most_liked_musics.length > 0 ? dashboardInfo?.most_liked_musics.map((music, index) => (
                         <div key={index} className="flex items-center gap-4">
                             <div className="text-right">
-                                <p className="text-sm font-medium text-[#030229]">{employee.name}</p>
+                                <p className="text-sm font-medium w-[136px] text-[#030229]">{music.title}</p>
                             </div>
                             <div className="flex-1">
                                 <div className="w-full bg-transparent rounded-full h-3">
@@ -30,12 +24,14 @@ const EmployeeList = () => {
                                 </div>
                             </div>
                             <div className="flex gap-1">
-                                <p className="text-sm font-medium text-[#030229]">{employee.like}</p>
+                                <p className="text-sm font-medium text-[#030229]">{music.likes}</p>
                                 <Heart color="#F04248" variant="Bold" size={24} className="w-5 h-5 " />
                             </div>
 
                         </div>
-                    ))}
+                    )) : <div className="flex items-center justify-center h-full">
+                        <p className="text-sm font-medium text-[#030229]">هیچ موزیک موجود نیست</p>
+                    </div>}
                 </div>
             </div>
         </div>

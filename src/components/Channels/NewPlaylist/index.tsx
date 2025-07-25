@@ -1,26 +1,31 @@
 "use client"
 
-import { useStorePlaylistMutation } from "@/app/(protected)/channels/[slug]/new-playlist/api"
+import { PlaylistResponseType } from "@/app/(protected)/channels/[slug]/api/api.types"
+import { useStorePlaylistMutation, useUpdatePlaylistMutation } from "@/app/(protected)/channels/[slug]/new-playlist/api"
 import { Button } from "@/components/ui/button"
 import { PersianDatePicker } from "@/components/ui/date-picker"
 import { Input } from "@/components/ui/input"
 import TimePicker from "@/components/ui/time-picker"
 import { createPlaylistSchema, CreatePlaylistSchemaType } from "@/schema/playlist.schema"
+import { ADD_PLAYLIST_STATE } from "@/states/add-playlist"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useAtom } from "jotai"
 import { Loader2 } from "lucide-react"
 import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import AddMusicToPlayList from "./AddMusicToPlayList"
 import Header from "./Header"
-import { useState } from "react"
-import { ADD_PLAYLIST_STATE } from "@/states/add-playlist"
-import { useAtom } from "jotai"
 import PlaylistManager from "./PlayListManager"
+import { toast } from "sonner"
 
-export function NewPlaylist() {
+export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: PlaylistResponseType[0] | null | undefined }) {
   const { slug } = useParams()
   const { mutate: storePlaylist, isPending: isPendingStorePlaylist } = useStorePlaylistMutation()
+  const { mutate: updatePlaylist, isPending: isPendingUpdatePlaylist } = useUpdatePlaylistMutation()
   const [playlistData, setPlaylistData] = useState<{ name: string, id: number } | null>(null)
+
+
 
 
   const {
@@ -33,13 +38,13 @@ export function NewPlaylist() {
   } = useForm<CreatePlaylistSchemaType>({
     resolver: zodResolver(createPlaylistSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      start_date: new Date(),
-      end_date: new Date(),
-      start_time: "",
-      end_time: "",
-      activate: true,
+      name: initialPlaylistData?.name || "",
+      description: initialPlaylistData?.description || "",
+      start_date: initialPlaylistData?.start_date || new Date(),
+      end_date: initialPlaylistData?.end_date || new Date(),
+      start_time: initialPlaylistData?.start_time || "",
+      end_time: initialPlaylistData?.end_time || "",
+      activate: initialPlaylistData?.activate || true,
     },
   })
 
@@ -53,22 +58,54 @@ export function NewPlaylist() {
 
 
 
+
+
   const storePlaylistHandler = (data: CreatePlaylistSchemaType) => {
+    if (initialPlaylistData) {
+      updatePlaylist({
+        id: initialPlaylistData.id.toString(),
+        data: {
+          ...data,
+          channel_playlist: Number(slug),
+        },
+      }, {
+        onSuccess: (data) => {
+          data && setPlaylistData({
+            name: data.data.name,
+            id: data.data.id,
+          })
+          toast.success("پلی‌لیست با موفقیت به روز شد");
+        },
+        onError(error) {
+          toast.error(error.message);
+        },
+      })
+    } else
+      storePlaylist({
+        ...data,
+        channel_playlist: Number(slug),
+      }, {
+        onSuccess: (data) => {
+          data && setPlaylistData({
+            name: data.data.name,
+            id: data.data.id,
+          })
 
-    storePlaylist({
-      ...data,
-      channel_playlist: Number(slug),
-    }, {
-      onSuccess: (data) => {
-        data && setPlaylistData({
-          name: data.data.name,
-          id: data.data.id,
-        })
-
-      }
-    })
+        }
+      })
   }
   const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+
+  useEffect(() => {
+    return () => {
+      setAddPlaylistState((prev) => ({
+        ...prev,
+        showChangePosition: false,
+        musics: [],
+        playListId: -1
+      }))
+    }
+  }, [setAddPlaylistState])
 
 
   return (

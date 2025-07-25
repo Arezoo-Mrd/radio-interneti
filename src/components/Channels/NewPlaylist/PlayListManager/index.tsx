@@ -21,30 +21,37 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useAtom } from "jotai";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import DroppableArea from "./DroppableArea";
 import PlaylistCard from "./PlayListCard";
 import SortableItem from "./SortableItem";
+import { useUpdateMusicPositionMutation } from "@/app/(protected)/channels/[slug]/new-playlist/api";
+import { toast } from "sonner";
+import { useParams, useRouter } from "next/navigation";
 
 
 export default function PlaylistManager() {
   const { data: musics } = useGetAllMusicQuery({}, true)
   const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+  const { slug } = useParams()
+  const router = useRouter()
 
-
-  console.log('addPlaylistState', addPlaylistState)
 
 
   type ItemType = MusicType & { position: number }
 
 
 
+
+
   const [items, setItems] = useState<ItemType[]>([] as ItemType[]);
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  console.log('items', items)
+  const { mutate: updateMusicPositionMutation, isPending } = useUpdateMusicPositionMutation()
+
+
 
 
   useEffect(() => {
@@ -92,6 +99,25 @@ export default function PlaylistManager() {
     ? items.find((item) => item.id === Number(activeId))
     : null;
 
+
+  const updateMusicPosition = () => {
+    updateMusicPositionMutation({
+      playlist_id: addPlaylistState.playListId,
+      musics: items.map((item) => ({
+        music_id: item.id,
+        position: item.position
+      }))
+    }, {
+      onSuccess: () => {
+        toast.success("پلی‌لیست با موفقیت به روز شد");
+        router.push(`/channels/${slug}`)
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      }
+    })
+  }
+
   return (
     <div className="min-h-screen  p-6">
       <div className="">
@@ -103,11 +129,12 @@ export default function PlaylistManager() {
           <div className="flex gap-1">
             <Button
               type="submit"
-              disabled
+              disabled={isPending}
               size={"lg"}
-              className={` bg-primary-main`}
+              className={` bg-primary-main ${isPending ? "opacity-50" : ""}`}
+              onClick={updateMusicPosition}
             >
-              {"ذخیره و اضافه"}
+              {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "ذخیره و اضافه"}
             </Button>
             <Button
               onClick={() => {

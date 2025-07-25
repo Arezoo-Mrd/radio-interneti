@@ -42,3 +42,15 @@ export type PlaylistResponseType = {
         activate: boolean,
     }[]
 }[]
+
+
+
+export type UpdateMusicPositionType = {
+    playlist_id: number,
+    musics: {
+        music_id: number,
+        position: number,
+    }[]
+}
+
+
