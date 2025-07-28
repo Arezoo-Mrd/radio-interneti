@@ -171,7 +171,13 @@ const Columns = ({ playlists }: ColumnsProps) => {
         );
       },
       cell: ({ row }) => {
-        return <div>{row.original.playlists[0]?.name}</div>;
+        return (
+          <div className="flex flex-col gap-2 text-right">
+            {row.original.playlists.map((playlist) => {
+              return <div key={playlist.id}>{playlist.name}</div>
+            })}
+          </div>
+        )
       },
       enableSorting: true,
       sortingFn: (rowA, rowB) => {
@@ -218,6 +224,7 @@ const Columns = ({ playlists }: ColumnsProps) => {
                   cover: row.original.cover || null,
                   musicId: row.original.id,
                   genreId: row.original.genre.id,
+                  is_ads: row.original.is_ads,
                 }]
               })
             }} variant="ghost" size="icon" className="bg-[#7367F0]/20 w-6 h-6 cursor-pointer">

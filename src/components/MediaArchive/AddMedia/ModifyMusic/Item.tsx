@@ -22,7 +22,7 @@ import { EditableAudioType } from ".";
 import DropDown from "./DropDown";
 import ModifyInput from "./ModifyInput";
 import { useUpdateMusicMutation } from "@/app/(protected)/media-archive/add-media/api";
-import { useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
 import { FilterOptionsType } from "@/app/(protected)/media-archive/api/api.types";
 
@@ -31,6 +31,7 @@ type ItemProps = {
     musicId: number | undefined;
     genreId: number | undefined;
     filterOptions: FilterOptionsType | undefined;
+
 };
 
 const Item = ({ music, musicId, filterOptions }: ItemProps) => {
@@ -55,9 +56,10 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
         resolver: zodResolver(modifyMusicSchema),
         defaultValues: {
             artist: music.artist,
-            is_ads: false,
+            is_ads: music.is_ads,
             title: music.title,
             genre_id: music.genreId || undefined,
+
 
         },
         mode: "onChange",

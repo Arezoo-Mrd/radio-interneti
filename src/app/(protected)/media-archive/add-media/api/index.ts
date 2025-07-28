@@ -2,7 +2,7 @@ import { getCookie } from "@/lib/cookies";
 import { StoreMusicRequestType, StoreMusicResponseType, UpdateMusicRequestType } from "./api.types";
 import { fetchInstance } from "@/lib/fetch";
 import { STORE_MUSICS, UPDATE_MUSICS } from "./constants";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const postStoreMusic = async (body: StoreMusicRequestType) => {
     const formData = new FormData();
@@ -61,8 +61,12 @@ export const useStoreMusicMutation = () => {
 };
 
 export const useUpdateMusicMutation = () => {
+    const queryClient = useQueryClient();
     return useMutation({
         mutationKey: ["update-music"],
         mutationFn: postUpdateMusic,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["all-music"] });
+        }
     });
 };

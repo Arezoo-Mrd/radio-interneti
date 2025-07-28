@@ -57,6 +57,7 @@ const AddMedia = () => {
                         duration: audioStates[file.id]?.duration || 0,
                         cover: null,
                         musicId: data?.data.id,
+                        is_ads: false
                         // genreId: data?.data.genre_id,
 
                     }));

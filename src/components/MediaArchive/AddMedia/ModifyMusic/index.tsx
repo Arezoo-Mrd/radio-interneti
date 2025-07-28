@@ -8,6 +8,7 @@ export interface EditableAudioType {
     cover: string | null;
     id: string;
     genreId?: number | undefined;
+    is_ads: boolean;
 }
 
 type EditMusicsProps = {
