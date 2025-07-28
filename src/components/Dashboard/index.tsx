@@ -13,7 +13,7 @@ const Dashboard = ({ dashboardInfo }: { dashboardInfo: DashboardInfo | undefined
             <div className="w-full">
                 {dashboardInfo && <HeaderStates dashboardInfo={dashboardInfo} />}
                 <div className="flex w-full items-center gap-6">
-                    <Chart />
+                    <Chart visitors={dashboardInfo?.visitors || []} />
                     <EmployeeList dashboardInfo={dashboardInfo} />
                 </div>
                 <div className="w-full overflow-x-auto bg-white my-6 rounded-xl flex flex-col justify-between overflow-y-hidden">

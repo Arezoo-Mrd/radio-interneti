@@ -1,19 +1,11 @@
 
 
+import { DashboardInfo } from '@/app/(protected)/dashboard/api';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from 'recharts';
 
-const Chart = () => {
+const Chart = ({ visitors }: { visitors: DashboardInfo["visitors"] }) => {
 
-    const chartData = [
-        { month: '۱۴۰۲/۱۲/۱۲', value: 2500 },
-        { month: '۱۴۰۲/۱۲/۱۳', value: 3000 },
-        { month: '۱۴۰۲/۱۲/۱۴', value: 1900 },
-        { month: '۱۴۰۲/۱۲/۱۵', value: 2940 },
-        { month: '۱۴۰۲/۱۲/۱۶', value: 1800 },
-        { month: '۱۴۰۲/۱۲/۱۷', value: 3100 },
-        { month: '۱۴۰۲/۱۲/۱۸', value: 3600 },
 
-    ];
 
     const CustomTooltip = ({ active, payload }: { active: boolean, payload: any }) => {
         const isVisible = active && payload && payload.length;
@@ -22,7 +14,7 @@ const Chart = () => {
                 {isVisible && (
                     <div className='px-2 py-1 text-center '>
                         <p className="text-[12px]">{`تعداد کاربر`}</p>
-                        <p className="intro font-PeydaSemiBold text-base">{payload[0].value}</p>
+                        <p className="intro font-PeydaSemiBold text-base">{payload[0].visitor}</p>
                     </div>
 
                 )}
@@ -37,7 +29,7 @@ const Chart = () => {
             </div>
             <div className="w-full">
                 <ResponsiveContainer width="100%" height={240}>
-                    <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <LineChart data={visitors} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                         <defs>
                             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stopColor="#5BC4FF" />
@@ -46,7 +38,7 @@ const Chart = () => {
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis
-                            dataKey="month"
+                            dataKey="date"
                             axisLine={false}
                             tickLine={false}
                             tick={{ fontSize: 11, fill: '#666' }}
@@ -56,8 +48,8 @@ const Chart = () => {
                             axisLine={false}
                             tickLine={false}
                             tick={{ fontSize: 11, fill: '#666' }}
-                            domain={[0, 3000]}
-                            ticks={[0, 1000, 2000, 3000]}
+                            domain={[0, 10]}
+                            ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                         />
                         <Tooltip
                             contentStyle={{
@@ -70,7 +62,7 @@ const Chart = () => {
                         />
                         <Line
                             type="monotone"
-                            dataKey="value"
+                            dataKey="visitor"
                             stroke="url(#lineGradient)"
                             strokeWidth={5}
                             dot={{ fill: '#fff', strokeWidth: 2, r: 6 }}

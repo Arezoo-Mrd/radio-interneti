@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: "dash.livemst.com",
             },
+            {
+                protocol: 'https',
+                hostname: "spr.livemst.com",
+            },
         ],
     }
 };
