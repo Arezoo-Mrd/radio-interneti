@@ -95,7 +95,7 @@ const Columns = () => {
               <Trash size={20} color="#F11A3B" variant="Linear" />
             </Button>
             <Button variant="ghost" size="icon" className="bg-[#7367F0]/20 cursor-pointer w-6 h-6" >
-              <Link href={`${pathname}/new-playlist?playlist_id=${liveShow.id}`}>
+              <Link href={`${pathname}/new-playlist?playlist_id=${liveShow.id}&edit=true`}>
                 <Edit2 size={20} color="#7367F0" variant="Linear" />
               </Link>
             </Button>

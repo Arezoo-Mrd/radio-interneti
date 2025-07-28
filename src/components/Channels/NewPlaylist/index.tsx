@@ -11,7 +11,7 @@ import { ADD_PLAYLIST_STATE } from "@/states/add-playlist"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAtom } from "jotai"
 import { Loader2 } from "lucide-react"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import AddMusicToPlayList from "./AddMusicToPlayList"
@@ -24,6 +24,9 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
   const { mutate: storePlaylist, isPending: isPendingStorePlaylist } = useStorePlaylistMutation()
   const { mutate: updatePlaylist, isPending: isPendingUpdatePlaylist } = useUpdatePlaylistMutation()
   const [playlistData, setPlaylistData] = useState<{ name: string, id: number } | null>(null)
+
+  const searchParams = useSearchParams()
+  const isEdit = searchParams.get("edit") === "true"
 
 
 
@@ -111,6 +114,7 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
   return (
     <div className="w-full p-6">
       <Header
+        isEdit={isEdit}
       />
       {addPlaylistState.showChangePosition ? <PlaylistManager /> :
         <>

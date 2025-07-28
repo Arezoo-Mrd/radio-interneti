@@ -3,10 +3,10 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 type HeaderProps = {
-
+    isEdit: boolean;
 };
 
-const Header = ({ }: HeaderProps) => {
+const Header = ({ isEdit }: HeaderProps) => {
     const router = useRouter();
     const { slug } = useParams();
 
@@ -17,11 +17,11 @@ const Header = ({ }: HeaderProps) => {
     return (
         <div className="flex w-full items-center justify-between pt-6 pb-8 border-b border-[#2F2B3D1F]">
             <div className="flex flex-col gap-2">
-                <h4 className="text-2xl font-PeydaBold">افزودن پلی‌لیست جدید</h4>
+                <h4 className="text-2xl font-PeydaBold">{isEdit ? "ویرایش پلی‌لیست" : "افزودن پلی‌لیست جدید"}</h4>
                 {/* BreadCrumb */}
                 <div className="flex items-center text-sm gap-2 ">
                     <Link href={"/media-archive"} className="text-[#6C757D]">
-                        پلی‌لیست کانال یک
+                        {`پلی‌لیست کانال ${slug === "1" ? "یک" : "دو"}`}
                     </Link>
                     <span>/</span>
                     <span className="text-[#212529]">افزودن پلی‌لیست جدید</span>
