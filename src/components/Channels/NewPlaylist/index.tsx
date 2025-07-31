@@ -64,6 +64,14 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
 
 
   const storePlaylistHandler = (data: CreatePlaylistSchemaType) => {
+    if (isEdit) {
+      setAddPlaylistState((prev) => ({
+        ...prev,
+        showChangePosition: true,
+        playListId: initialPlaylistData?.id || -1
+      }))
+      return
+    }
     if (initialPlaylistData) {
       updatePlaylist({
         id: initialPlaylistData.id.toString(),
@@ -98,6 +106,10 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
       })
   }
   const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+
+
+
+
 
   useEffect(() => {
     return () => {

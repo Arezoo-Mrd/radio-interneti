@@ -18,9 +18,7 @@ const postStoreMusic = async (body: StoreMusicRequestType) => {
         options: {
             method: "POST",
             body: formData,
-            headers: {
-                "Content-Type": "application/octet-stream",
-            },
+
         },
         token: currentToken!,
     });
