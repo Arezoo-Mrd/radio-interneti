@@ -15,7 +15,7 @@ interface MultiInputProps {
 
 export function MultiInput({ value, onChange, placeholder, className }: MultiInputProps) {
   const [inputValue, setInputValue] = useState("")
-  console.log('inputValue', inputValue)
+
 
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

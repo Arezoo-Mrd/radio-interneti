@@ -130,7 +130,7 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
             }
         })
     };
-    console.log('music', music)
+
 
     const deleteMusicHandler = () => {
         deleteMusic(musicId?.toString() || "", {
