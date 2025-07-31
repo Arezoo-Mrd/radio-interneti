@@ -5,7 +5,7 @@ import { useSelectedFilters } from "@/hooks/use-selected-filter";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
 import { useAtom, useAtomValue } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import AddMedia from "./AddMedia";
 import Columns from "./Columns";
@@ -21,7 +21,7 @@ const MediaArchive = ({
     const [pageSize, setPageSize] = useState(10);
 
     const searchParams = useSearchParams();
-    const { data: filterOptions } = useGetFilterOptions();
+    const { data: filterOptions, isLoading: isLoadingFilterOptions } = useGetFilterOptions();
     const { selectedFilters } = useSelectedFilters(
         filterOptions?.data || {
             playlists: [],
@@ -62,9 +62,11 @@ const MediaArchive = ({
     const currentPageSize =
         searchParams.get("page_size") || musicResponse?.paginate?.per_page || 10;
 
-    const columns = Columns({
-        playlists: filterOptions?.data?.playlists || [],
-    });
+    const columns =
+        Columns({
+            playlists: filterOptions?.data?.playlists || [],
+        })
+
 
 
     const [addMediaState, setAddMediaState] = useAtom(ADD_MEDIA_STATE)
@@ -109,7 +111,7 @@ const MediaArchive = ({
 
     return (
         <div className="w-full overflow-x-hidden px-6.5">
-            {isLoading ? (
+            {isLoading || isLoadingFilterOptions ? (
                 <div className="flex items-center flex-col gap-4 justify-center p-8">
                     <Skeleton className="h-15 w-full" />
                     <Skeleton className="h-15 w-full" />

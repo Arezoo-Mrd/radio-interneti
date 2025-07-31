@@ -79,6 +79,7 @@ const AddMedia = () => {
 
     };
 
+
     return (
         <div className="w-full h-fit px-6 py-11">
             <Header

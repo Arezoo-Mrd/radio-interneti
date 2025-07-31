@@ -38,7 +38,7 @@ export function AddMediaDialog({
     if (isDesktop) {
         return (
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-[425px] px-8 py-6">
+                <DialogContent className="sm:max-w-[425px] max-h-[70vh] overflow-y-auto px-8 py-6">
                     <DialogTrigger ref={closeBtnRef}></DialogTrigger>
                     <DialogHeader className=" flex justify-start w-full text-right border-b! border-[#EDEDED] pb-4">
                         <DialogTitle>افزودن به پلی‌لیست</DialogTitle>
@@ -135,6 +135,7 @@ function MediaContainer({
             },
         });
     };
+
 
     return (
         <form
