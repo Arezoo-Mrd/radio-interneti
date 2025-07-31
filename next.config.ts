@@ -16,10 +16,12 @@ const nextConfig: NextConfig = {
             {
                 protocol: 'https',
                 hostname: "dash.livemst.com",
+                pathname: '/**',
             },
             {
                 protocol: 'https',
                 hostname: "spr.livemst.com",
+
             },
         ],
     }
