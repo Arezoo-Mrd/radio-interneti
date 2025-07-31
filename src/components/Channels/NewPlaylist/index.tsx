@@ -18,6 +18,7 @@ import AddMusicToPlayList from "./AddMusicToPlayList"
 import Header from "./Header"
 import PlaylistManager from "./PlayListManager"
 import { toast } from "sonner"
+import PlaylistTimeStatus from "./PlaylistTimeStatus"
 
 export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: PlaylistResponseType[0] | null | undefined }) {
   const { slug } = useParams()
@@ -123,6 +124,8 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
   }, [setAddPlaylistState])
 
 
+
+
   return (
     <div className="w-full p-6">
       <Header
@@ -209,6 +212,14 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
                 </Button>
 
               </form>
+              <div className="w-full py-4">
+                <PlaylistTimeStatus
+                  start_date={new Date(startDate).toISOString().split('T')[0]}
+                  start_time={startTime || "00:00"}
+                  end_date={new Date(endDate).toISOString().split('T')[0]}
+                  end_time={endTime || "00:00"}
+                />
+              </div>
             </div>
           </div>
           {playlistData?.name && <AddMusicToPlayList playlistName={playlistData.name} playlistId={playlistData.id} />}
