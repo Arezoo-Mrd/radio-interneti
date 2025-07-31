@@ -128,7 +128,7 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
       <Header
         isEdit={isEdit}
       />
-      {addPlaylistState.showChangePosition ? <PlaylistManager /> :
+      {addPlaylistState.showChangePosition ? <PlaylistManager playlistId={addPlaylistState.playListId} /> :
         <>
           <div className="w-full  p-4 pb-11 rounded-xl border border-[#F6F6F6] bg-[#FAFAFA]">
             <h1 className="text-[15px] font-PeydaMedium pb-6 text-right" dir="rtl">

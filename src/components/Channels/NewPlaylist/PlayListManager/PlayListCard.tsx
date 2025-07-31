@@ -2,7 +2,9 @@ import { MusicType } from "@/app/(protected)/media-archive/api/api.types";
 import { cn } from "@/lib/utils";
 import { Clock, Heart, MoreVertical, Play } from "lucide-react";
 import Image from "next/image";
-function PlaylistCard({ item }: { item: MusicType }) {
+import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
+
+function PlaylistCard({ item }: { item: SinglePlaylistResponseType["musics"][0] }) {
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all duration-200">

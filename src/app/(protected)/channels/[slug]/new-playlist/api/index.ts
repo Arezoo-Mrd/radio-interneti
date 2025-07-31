@@ -1,9 +1,9 @@
 import { getCookie } from "@/lib/cookies";
 import { fetchInstance } from "@/lib/fetch";
 import { appendQueryParams } from "@/lib/queryParams";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PlaylistResponseType, StorePlaylistResponseType, StorePlaylistType, UpdateMusicPositionType } from "./api.types";
+import { PlaylistResponseType, SinglePlaylistResponseType, StorePlaylistResponseType, StorePlaylistType, UpdateMusicPositionType } from "./api.types";
 import { ALL_PLAYLIST, DELETE_PLAYLIST, SHOW_PLAYLIST, STORE_PLAYLIST, UPDATE_MUSIC_POSITION, UPDATE_PLAYLIST } from "./constants";
 
 
@@ -32,6 +32,18 @@ export const getAllPlaylist = async ({
     return response;
 };
 
+
+const getSinglePlaylist = async (id: string, token?: string) => {
+    const currentToken = token || await getCookie("token");
+    const response = await fetchInstance<SinglePlaylistResponseType>({
+        path: SHOW_PLAYLIST(id),
+        options: {
+            method: "GET",
+        },
+        token: currentToken!,
+    });
+    return response?.data;
+}
 
 export const getPlaylist = async (id: string, token?: string) => {
     const currentToken = token || await getCookie("token");
@@ -172,8 +184,19 @@ export const useUpdatePlaylistMutation = () => {
 
 
 export const useUpdateMusicPositionMutation = () => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationFn: updateMusicPosition,
         mutationKey: ["update-music-position"],
+        onSuccess() {
+            queryClient.invalidateQueries({ queryKey: ["single-playlist"] })
+        }
+    });
+}
+export const useGetSinglePlaylistQuery = (id: string) => {
+    return useQuery({
+        queryKey: ["single-playlist", id],
+        queryFn: () => getSinglePlaylist(id),
+        enabled: !!id,
     });
 }

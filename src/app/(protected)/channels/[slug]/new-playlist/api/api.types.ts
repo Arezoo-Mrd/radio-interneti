@@ -54,3 +54,27 @@ export type UpdateMusicPositionType = {
 }
 
 
+export type SinglePlaylistResponseType = {
+    id: number,
+    name: string,
+    description: string | null,
+    start_date: string,
+    end_date: string,
+    start_time: string,
+    end_time: string,
+    activate: boolean,
+    channel: {
+        id: number,
+        name: string,
+        slug: string
+    },
+    musics: {
+        id: number,
+        title: string,
+        artist: string,
+        duration: number,
+        cover: string | null,
+        guest_like: number,
+        position: number
+    }[]
+}

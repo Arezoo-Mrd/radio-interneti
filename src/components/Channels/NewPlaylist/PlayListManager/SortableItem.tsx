@@ -12,8 +12,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Play, Heart } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
 
-function SortableItem({ item }: { item: MusicType }) {
+function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] }) {
     const {
         attributes,
         listeners,

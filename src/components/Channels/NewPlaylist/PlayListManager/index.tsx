@@ -20,33 +20,28 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useAtom } from "jotai";
+
 import { Loader2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import DroppableArea from "./DroppableArea";
 import PlaylistCard from "./PlayListCard";
 import SortableItem from "./SortableItem";
-import { useUpdateMusicPositionMutation } from "@/app/(protected)/channels/[slug]/new-playlist/api";
+import { useGetSinglePlaylistQuery, useUpdateMusicPositionMutation } from "@/app/(protected)/channels/[slug]/new-playlist/api";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
+import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
 
 
-export default function PlaylistManager() {
-  const { data: musics } = useGetAllMusicQuery({}, true)
-  const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+export default function PlaylistManager({ playlistId }: { playlistId: number }) {
+
+  const { data: playlistData, isLoading: isLoadingPlaylist } = useGetSinglePlaylistQuery(playlistId.toString())
+
   const { slug } = useParams()
   const router = useRouter()
 
 
-
-  type ItemType = MusicType & { position: number }
-
-
-
-
-
-  const [items, setItems] = useState<ItemType[]>([] as ItemType[]);
+  const [items, setItems] = useState<SinglePlaylistResponseType["musics"]>([] as SinglePlaylistResponseType["musics"]);
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const { mutate: updateMusicPositionMutation, isPending } = useUpdateMusicPositionMutation()
@@ -55,14 +50,10 @@ export default function PlaylistManager() {
 
 
   useEffect(() => {
-    if (musics) {
-      const selectedMusics = musics?.data.filter((music) => addPlaylistState.musics.some((item) => item.music_id === music.id))
-      setItems(selectedMusics?.map((music, index) => ({
-        ...music,
-        position: index + 1
-      })) || [])
+    if (playlistData) {
+      setItems(playlistData.musics)
     }
-  }, [musics])
+  }, [playlistData])
 
 
   const sensors = useSensors(
@@ -82,13 +73,11 @@ export default function PlaylistManager() {
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-
+    const oldIndex = items.findIndex((item) => item.id === active.id);
+    const position = items.findIndex((item) => item.id === over?.id)
     if (active.id !== over?.id) {
       setItems((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over?.id);
-
-        return arrayMove(items, oldIndex, newIndex);
+        return arrayMove(items, oldIndex, position);
       });
     }
 
@@ -102,13 +91,14 @@ export default function PlaylistManager() {
 
   const updateMusicPosition = () => {
     updateMusicPositionMutation({
-      playlist_id: addPlaylistState.playListId,
-      musics: items.map((item) => ({
+      playlist_id: playlistData?.id || 0,
+      musics: items.map((item, index) => ({
         music_id: item.id,
-        position: item.position
+        position: index + 1
       }))
     }, {
       onSuccess: () => {
+
         toast.success("پلی‌لیست با موفقیت به روز شد");
         router.push(`/channels/${slug}`)
       },
@@ -118,7 +108,12 @@ export default function PlaylistManager() {
     })
   }
 
-  return (
+
+
+
+  return (isLoadingPlaylist ? <div className="flex justify-center items-center h-[400px]">
+    <Loader2 className="w-11 h-11 animate-spin text-primary-main" />
+  </div> :
     <div className="min-h-screen  p-6">
       <div className="">
 
@@ -137,12 +132,7 @@ export default function PlaylistManager() {
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "ذخیره و اضافه"}
             </Button>
             <Button
-              onClick={() => {
-                console.log({
-                  items,
-                  playListId: addPlaylistState.playListId
-                })
-              }}
+
 
               size={"lg"} className="gap-2 flex items-center bg-primary-main">
               <Link href={`/media-archive/add-media`} className="flex items-center gap-2">

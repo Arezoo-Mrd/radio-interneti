@@ -1,5 +1,5 @@
 
-import { MusicType } from "@/app/(protected)/media-archive/api/api.types";
+import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
 import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
 import { cn } from "@/lib/utils";
 import {
@@ -9,14 +9,14 @@ import { Clock } from "iconsax-react";
 
 
 
-function DroppableArea({ children, items }: { children: React.ReactNode, items: MusicType[] }) {
+function DroppableArea({ children, items }: { children: React.ReactNode, items: SinglePlaylistResponseType["musics"] }) {
     const { isOver, setNodeRef } = useDroppable({
         id: "droppable",
     });
 
 
 
-    const totalDuration = items.reduce((acc: number, item: MusicType) => {
+    const totalDuration = items.reduce((acc: number, item: SinglePlaylistResponseType["musics"][0]) => {
         return acc + item.duration;
     }, 0);
 
