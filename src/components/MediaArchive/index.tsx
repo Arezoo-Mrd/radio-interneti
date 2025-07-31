@@ -105,15 +105,6 @@ const MediaArchive = ({
         }
     };
 
-    //  useEffect(() => {
-    //   if (selectedFilters.title) {
-    //    setTimeout(() => {
-    //     refetch();
-    //    }, 500);
-    //   } else {
-    //    refetch();
-    //   }
-    //  }, [page, pageSize, selectedFilters, refetch]);
 
 
     return (

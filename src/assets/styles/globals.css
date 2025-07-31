@@ -230,3 +230,12 @@ html {
 .rmdp-day span, .rmdp-week-day {
   color: #121212 !important;
 }
+
+@keyframes pulse-height {
+  0%, 100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}

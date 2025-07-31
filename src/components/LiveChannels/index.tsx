@@ -46,6 +46,8 @@ export function LiveChannels<TData extends GetAllLiveResponse[0]>({
 
   const columns = Columns();
 
+
+
   const table = useReactTable({
     data,
     columns,

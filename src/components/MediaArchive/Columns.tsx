@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { AddMediaDialog } from "./AddMediaDialog";
 import { toast } from "sonner";
+import Image from "next/image";
 
 type ColumnsProps = {
   playlists: FilterOptionsType["playlists"];
@@ -61,6 +62,7 @@ const Columns = ({ playlists }: ColumnsProps) => {
         );
       },
     },
+
     {
       accessorKey: "title",
       header: ({ column }) => {
@@ -78,6 +80,14 @@ const Columns = ({ playlists }: ColumnsProps) => {
             />
           </Button>
         );
+      },
+      cell: ({ row }) => {
+        return <div className="flex items-center gap-4">
+          <div className="w-11 h-11 rounded-xl border border-gray-300 bg-gray-100 overflow-hidden">
+            <Image src={row.original.cover || "/mic.png"} alt={row.original.title} width={44} height={44} className="object-cover" />
+          </div>
+          <div>{row.original.title}</div>
+        </div>
       },
       enableSorting: true,
     },
