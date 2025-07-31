@@ -51,6 +51,7 @@ export function Channels<TData extends PlaylistResponseType[0]>({
 
   const columns = Columns();
 
+
   const table = useReactTable({
     data,
     columns,

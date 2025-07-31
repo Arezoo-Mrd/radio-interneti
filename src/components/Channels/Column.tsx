@@ -35,10 +35,11 @@ const Columns = () => {
       header: "زمان شروع",
       cell: ({ row }) => {
         const startDate = row.getValue("start_date") as string;
+        const startTime = row.original.start_time as string;
 
         return (
           <div dir="ltr" className="text-center text-sm">
-            {formattedDate(startDate)}
+            {formattedDate(startDate + "T" + startTime)}
           </div>
         );
       },
@@ -47,11 +48,12 @@ const Columns = () => {
       accessorKey: "end_date",
       header: "زمان پایان",
       cell: ({ row }) => {
-        const endTime = row.getValue("end_date") as string;
+        const endTime = row.original.end_time as string;
+        const endDate = row.original.end_date as string;
 
         return (
           <div dir="ltr" className="text-center text-sm">
-            {formattedDate(endTime)}
+            {formattedDate(endDate + "T" + endTime)}
           </div>
         );
       },
