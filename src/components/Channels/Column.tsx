@@ -11,13 +11,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { useSetAtom } from "jotai";
+import { useError } from "@/hooks/use-error";
 
 
 const Columns = () => {
 
   const pathname = usePathname();
   const { mutate } = useDeletePlaylistMutation();
-
+  const { errorHandler } = useError()
 
   const columns: ColumnDef<PlaylistResponseType[0]>[] = [
     {
@@ -85,11 +86,8 @@ const Columns = () => {
                   onSuccess: () => {
                     toast.success("پلی لیست با موفقیت حذف شد");
                   },
-                  onError: (e) => {
-                    if (e instanceof Error) {
-                      toast.error(e.message);
-                    }
-                    toast.error("خطایی رخ داده است");
+                  onError: (error) => {
+                    errorHandler(error)
                   }
                 })
               }}

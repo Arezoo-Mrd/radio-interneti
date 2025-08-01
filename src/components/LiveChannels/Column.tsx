@@ -10,11 +10,13 @@ import { useDeleteLiveMutation } from "@/app/(protected)/live-channels/api";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import isLiveNow from "@/lib/isLiveNow";
+import { useError } from "@/hooks/use-error";
 
 
 const Columns = () => {
     const queryClient = useQueryClient();
     const { mutate } = useDeleteLiveMutation();
+    const { errorHandler } = useError()
     const columns: ColumnDef<GetAllLiveResponse[0]>[] = [
         {
             accessorKey: "name",
@@ -66,10 +68,11 @@ const Columns = () => {
             header: "زمان شروع",
             cell: ({ row }) => {
                 const startDate = row.getValue("start_date") as string;
+                const startTime = row.original.start_time as string;
 
                 return (
                     <div dir="ltr" className="text-center text-sm">
-                        {formattedDate(startDate)}
+                        {formattedDate(startDate + "T" + startTime)}
                     </div>
                 );
             },
@@ -78,11 +81,12 @@ const Columns = () => {
             accessorKey: "end_date",
             header: "زمان پایان",
             cell: ({ row }) => {
-                const endTime = row.getValue("end_date") as string;
+                const endTime = row.original.end_time as string;
+                const endDate = row.original.end_date as string;
 
                 return (
                     <div dir="ltr" className="text-center text-sm">
-                        {formattedDate(endTime)}
+                        {formattedDate(endDate + "T" + endTime)}
                     </div>
                 );
             },
@@ -109,7 +113,7 @@ const Columns = () => {
                                 queryClient.invalidateQueries({ queryKey: ["live-channels"] });
                             },
                             onError(error) {
-                                toast.error(error.message);
+                                errorHandler(error)
                             },
                         })}
                     >

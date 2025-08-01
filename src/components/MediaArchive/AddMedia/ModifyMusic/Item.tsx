@@ -25,6 +25,7 @@ import { useUpdateMusicMutation } from "@/app/(protected)/media-archive/add-medi
 import { useSetAtom } from "jotai";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
 import { FilterOptionsType } from "@/app/(protected)/media-archive/api/api.types";
+import { useError } from "@/hooks/use-error";
 
 type ItemProps = {
     music: EditableAudioType;
@@ -40,7 +41,7 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
 
 
     const { mutate, isPending } = useUpdateMusicMutation()
-
+    const { errorHandler } = useError()
     const { mutate: deleteMusic, isPending: isDeleting } = useDeleteMusicMutation()
 
     const [coverPreview, setCoverPreview] = useState<string | null>(
@@ -126,7 +127,7 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
                 closeEditMode()
             },
             onError: (error) => {
-                toast.error(error.message)
+                errorHandler(error)
             }
         })
     };

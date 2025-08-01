@@ -14,14 +14,18 @@ export type SuccessResponse<T> = {
   data: T;
 };
 
-const convertToFormData = (body: string) => {
-  const formData = new FormData();
-  const data = JSON.parse(body);
-  Object.entries(data).forEach(([key, value]) => {
-    formData.append(key, value as string);
-  });
-  return formData;
-};
+
+
+class FetchError extends Error {
+  response: object;
+  constructor(message: string, response: object) {
+    super(message);
+    this.name = "FetchError";
+    this.response = response;
+  }
+}
+
+
 
 export const fetchInstance = async <T>(opt: {
   path: string | URL;
@@ -56,7 +60,9 @@ export const fetchInstance = async <T>(opt: {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message);
+
+      throw new FetchError(error.message, error.errors
+      );
     }
 
     if (response.status === 401) {
@@ -72,6 +78,7 @@ export const fetchInstance = async <T>(opt: {
     if (typeof responseData === "string") {
       throw new Error(responseData);
     }
+
 
     return responseData;
   } catch (error: any) {

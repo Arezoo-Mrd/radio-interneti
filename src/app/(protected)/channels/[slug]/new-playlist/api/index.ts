@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PlaylistResponseType, SinglePlaylistResponseType, StorePlaylistResponseType, StorePlaylistType, UpdateMusicPositionType } from "./api.types";
 import { ALL_PLAYLIST, DELETE_PLAYLIST, SHOW_PLAYLIST, STORE_PLAYLIST, UPDATE_MUSIC_POSITION, UPDATE_PLAYLIST } from "./constants";
+import { useError } from "@/hooks/use-error";
 
 
 export const getAllPlaylist = async ({
@@ -134,20 +135,22 @@ const deletePlaylist = async (id: string) => {
 };
 
 export const useDeletePlaylistMutation = () => {
+    const { errorHandler } = useError()
     return useMutation({
         mutationFn: deletePlaylist,
         mutationKey: ["delete-playlist"],
         onSuccess() {
             toast.success("پلی‌لیست با موفقیت حذف شد");
         },
-        onError() {
-            toast.error("خطا در حذف پلی‌لیست");
+        onError(error) {
+            errorHandler(error)
         },
     });
 };
 
 
 export const useStorePlaylistMutation = () => {
+    const { errorHandler } = useError()
     return useMutation({
         mutationFn: postStorePlaylist,
         mutationKey: ["store-playlist"],
@@ -155,7 +158,7 @@ export const useStorePlaylistMutation = () => {
             toast.success("پلی‌لیست با موفقیت ثبت شد");
         },
         onError(error) {
-            toast.error(error.message);
+            errorHandler(error)
         },
     });
 }
@@ -170,6 +173,7 @@ export const useGetPlaylistQuery = (id: string) => {
 }
 
 export const useUpdatePlaylistMutation = () => {
+    const { errorHandler } = useError()
     return useMutation({
         mutationFn: updatePlaylist,
         mutationKey: ["update-playlist"],
@@ -177,7 +181,7 @@ export const useUpdatePlaylistMutation = () => {
             toast.success("پلی‌لیست با موفقیت به روز شد");
         },
         onError(error) {
-            toast.error(error.message);
+            errorHandler(error)
         },
     });
 }
@@ -185,11 +189,15 @@ export const useUpdatePlaylistMutation = () => {
 
 export const useUpdateMusicPositionMutation = () => {
     const queryClient = useQueryClient()
+    const { errorHandler } = useError()
     return useMutation({
         mutationFn: updateMusicPosition,
         mutationKey: ["update-music-position"],
         onSuccess() {
             queryClient.invalidateQueries({ queryKey: ["single-playlist"] })
+        },
+        onError(error) {
+            errorHandler(error)
         }
     });
 }

@@ -3,6 +3,8 @@ import { StoreMusicRequestType, StoreMusicResponseType, UpdateMusicRequestType }
 import { fetchInstance } from "@/lib/fetch";
 import { STORE_MUSICS, UPDATE_MUSICS } from "./constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useError } from "@/hooks/use-error";
 
 const postStoreMusic = async (body: StoreMusicRequestType) => {
     const formData = new FormData();
@@ -52,19 +54,28 @@ const postUpdateMusic = async (body: UpdateMusicRequestType) => {
 }
 
 export const useStoreMusicMutation = () => {
+    const { errorHandler } = useError()
     return useMutation({
         mutationKey: ["store-music"],
         mutationFn: postStoreMusic,
+
+        onError: (error) => {
+            errorHandler(error)
+        }
     });
 };
 
 export const useUpdateMusicMutation = () => {
     const queryClient = useQueryClient();
+    const { errorHandler } = useError()
     return useMutation({
         mutationKey: ["update-music"],
         mutationFn: postUpdateMusic,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["all-music"] });
+        },
+        onError: (error) => {
+            errorHandler(error)
         }
     });
 };

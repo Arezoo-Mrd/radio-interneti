@@ -75,7 +75,7 @@ export function Channels<TData extends PlaylistResponseType[0]>({
     <div className="w-full space-y-8 py-11 px-6">
       <div className="flex items-center justify-between gap-6  px-6 h-25 bg-background ">
         {/* Title */}
-        <h1 className="text-[22px] font-PeydaMedium">پلی‌لیست کانال یک</h1>
+        <h1 className="text-[22px] font-PeydaMedium">پلی‌لیست کانال {slug === "1" ? "یک" : "دو"}</h1>
 
         <div className="flex items-center gap-4 flex-1 justify-between">
           <div className="relative w-[229px]">

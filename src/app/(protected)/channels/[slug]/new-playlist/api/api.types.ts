@@ -54,6 +54,8 @@ export type UpdateMusicPositionType = {
 }
 
 
+
+
 export type SinglePlaylistResponseType = {
     id: number,
     name: string,

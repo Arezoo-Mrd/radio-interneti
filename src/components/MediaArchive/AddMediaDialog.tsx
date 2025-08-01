@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { Checkbox } from "../ui/checkbox";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
+import { useError } from "@/hooks/use-error";
 
 export function AddMediaDialog({
     closeBtnRef,
@@ -85,7 +86,7 @@ function MediaContainer({
 }) {
 
     const { mutate: assignBulkMediasToPlaylist, isPending } = usePutAssignBulkMediasToPlaylistMutation();
-
+    const { errorHandler } = useError()
     const {
         handleSubmit,
         control,
@@ -129,8 +130,7 @@ function MediaContainer({
                 ref.current?.click();
             },
             onError: (error) => {
-                toast.error(error.message);
-
+                errorHandler(error)
 
             },
         });

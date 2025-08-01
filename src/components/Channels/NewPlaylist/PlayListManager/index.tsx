@@ -1,5 +1,3 @@
-import { useGetAllMusicQuery } from "@/app/(protected)/media-archive/api";
-import { MusicType } from "@/app/(protected)/media-archive/api/api.types";
 import { Button } from "@/components/ui/button";
 import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
 import {
@@ -21,27 +19,30 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import { useGetSinglePlaylistQuery, useUpdateMusicPositionMutation } from "@/app/(protected)/channels/[slug]/new-playlist/api";
+import { useError } from "@/hooks/use-error";
+import { useAtom } from "jotai";
 import { Loader2, Plus } from "lucide-react";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import AddMusicToPlayList from "../AddMusicToPlayList";
 import DroppableArea from "./DroppableArea";
 import PlaylistCard from "./PlayListCard";
 import SortableItem from "./SortableItem";
-import { useGetSinglePlaylistQuery, useUpdateMusicPositionMutation } from "@/app/(protected)/channels/[slug]/new-playlist/api";
-import { toast } from "sonner";
-import { useParams, useRouter } from "next/navigation";
-import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
 
 
 export default function PlaylistManager({ playlistId }: { playlistId: number }) {
 
   const { data: playlistData, isLoading: isLoadingPlaylist } = useGetSinglePlaylistQuery(playlistId.toString())
-
+  const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+  const { errorHandler } = useError()
   const { slug } = useParams()
   const router = useRouter()
 
 
-  const [items, setItems] = useState<SinglePlaylistResponseType["musics"]>([] as SinglePlaylistResponseType["musics"]);
+
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const { mutate: updateMusicPositionMutation, isPending } = useUpdateMusicPositionMutation()
@@ -51,7 +52,10 @@ export default function PlaylistManager({ playlistId }: { playlistId: number }) 
 
   useEffect(() => {
     if (playlistData) {
-      setItems(playlistData.musics)
+      setAddPlaylistState((prev) => ({
+        ...prev,
+        musics: playlistData.musics
+      }))
     }
   }, [playlistData])
 
@@ -73,11 +77,14 @@ export default function PlaylistManager({ playlistId }: { playlistId: number }) 
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    const oldIndex = items.findIndex((item) => item.id === active.id);
-    const position = items.findIndex((item) => item.id === over?.id)
+    const oldIndex = addPlaylistState.musics.findIndex((item) => item.id === active.id);
+    const position = addPlaylistState.musics.findIndex((item) => item.id === over?.id)
     if (active.id !== over?.id) {
-      setItems((items) => {
-        return arrayMove(items, oldIndex, position);
+      setAddPlaylistState((prev) => {
+        return {
+          ...prev,
+          musics: arrayMove(prev.musics, oldIndex, position)
+        }
       });
     }
 
@@ -85,14 +92,15 @@ export default function PlaylistManager({ playlistId }: { playlistId: number }) 
   }
 
   const activeItem = activeId
-    ? items.find((item) => item.id === Number(activeId))
+    ? addPlaylistState.musics.find((item) => item.id === Number(activeId))
     : null;
 
 
   const updateMusicPosition = () => {
     updateMusicPositionMutation({
       playlist_id: playlistData?.id || 0,
-      musics: items.map((item, index) => ({
+      musics: addPlaylistState.musics.map((item, index) => ({
+        ...item,
         music_id: item.id,
         position: index + 1
       }))
@@ -103,7 +111,7 @@ export default function PlaylistManager({ playlistId }: { playlistId: number }) 
         router.push(`/channels/${slug}`)
       },
       onError: (error) => {
-        toast.error(error.message);
+        errorHandler(error)
       }
     })
   }
@@ -114,7 +122,7 @@ export default function PlaylistManager({ playlistId }: { playlistId: number }) 
   return (isLoadingPlaylist ? <div className="flex justify-center items-center h-[400px]">
     <Loader2 className="w-11 h-11 animate-spin text-primary-main" />
   </div> :
-    <div className="min-h-screen  p-6">
+    <div className="h-fit p-6">
       <div className="">
 
         <div className="flex items-center justify-between mb-8">
@@ -144,6 +152,10 @@ export default function PlaylistManager({ playlistId }: { playlistId: number }) 
           </div>
         </div>
 
+        <div className="pb-4">
+          <AddMusicToPlayList playlistName={playlistData?.name || ""} playlistId={playlistData?.id || 0} />
+
+        </div>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -152,10 +164,10 @@ export default function PlaylistManager({ playlistId }: { playlistId: number }) 
           modifiers={[restrictToVerticalAxis]}
         >
           {/* Drop Zone */}
-          <DroppableArea items={items}>
+          <DroppableArea items={addPlaylistState.musics} >
             <div className="space-y-3">
-              <SortableContext items={items} strategy={verticalListSortingStrategy}>
-                {items.map((item) => (
+              <SortableContext items={addPlaylistState.musics} strategy={verticalListSortingStrategy}>
+                {addPlaylistState.musics.map((item) => (
                   <SortableItem key={item.id} item={item} />
                 ))}
               </SortableContext>

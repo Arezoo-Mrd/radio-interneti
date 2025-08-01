@@ -14,18 +14,17 @@ import { Loader2 } from "lucide-react"
 import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import AddMusicToPlayList from "./AddMusicToPlayList"
+import { toast } from "sonner"
 import Header from "./Header"
 import PlaylistManager from "./PlayListManager"
-import { toast } from "sonner"
-import PlaylistTimeStatus from "./PlaylistTimeStatus"
+import { useError } from "@/hooks/use-error"
 
 export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: PlaylistResponseType[0] | null | undefined }) {
   const { slug } = useParams()
   const { mutate: storePlaylist, isPending: isPendingStorePlaylist } = useStorePlaylistMutation()
   const { mutate: updatePlaylist, isPending: isPendingUpdatePlaylist } = useUpdatePlaylistMutation()
   const [playlistData, setPlaylistData] = useState<{ name: string, id: number } | null>(null)
-
+  const { errorHandler } = useError()
   const searchParams = useSearchParams()
   const isEdit = searchParams.get("edit") === "true"
 
@@ -44,8 +43,8 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
     defaultValues: {
       name: initialPlaylistData?.name || "",
       description: initialPlaylistData?.description || "",
-      start_date: initialPlaylistData?.start_date || new Date(),
-      end_date: initialPlaylistData?.end_date || new Date(),
+      start_date: new Date(initialPlaylistData?.start_date || ""),
+      end_date: new Date(initialPlaylistData?.end_date || ""),
       start_time: initialPlaylistData?.start_time || "",
       end_time: initialPlaylistData?.end_time || "",
       activate: initialPlaylistData?.activate || true,
@@ -64,15 +63,9 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
 
 
 
+
+
   const storePlaylistHandler = (data: CreatePlaylistSchemaType) => {
-    if (isEdit) {
-      setAddPlaylistState((prev) => ({
-        ...prev,
-        showChangePosition: true,
-        playListId: initialPlaylistData?.id || -1
-      }))
-      return
-    }
     if (initialPlaylistData) {
       updatePlaylist({
         id: initialPlaylistData.id.toString(),
@@ -86,10 +79,19 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
             name: data.data.name,
             id: data.data.id,
           })
+          setAddPlaylistState((prev) => ({
+            ...prev,
+            showChangePosition: true,
+            playListId: initialPlaylistData?.id || -1,
+            start_date: data?.data.start_date || "",
+            start_time: data?.data.start_time || "",
+            end_date: data?.data.end_date || "",
+            end_time: data?.data.end_time || "",
+          }))
           toast.success("پلی‌لیست با موفقیت به روز شد");
         },
         onError(error) {
-          toast.error(error.message);
+          errorHandler(error)
         },
       })
     } else
@@ -98,6 +100,16 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
         channel_playlist: Number(slug),
       }, {
         onSuccess: (data) => {
+          setAddPlaylistState((prev) => ({
+            ...prev,
+            showChangePosition: true,
+            playListId: data?.data.id || -1,
+            start_date: data?.data.start_date || "",
+            start_time: data?.data.start_time || "",
+            end_date: data?.data.end_date || "",
+            end_time: data?.data.end_time || "",
+          }))
+
           data && setPlaylistData({
             name: data.data.name,
             id: data.data.id,
@@ -131,9 +143,11 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
       <Header
         isEdit={isEdit}
       />
+
       {addPlaylistState.showChangePosition ? <PlaylistManager playlistId={addPlaylistState.playListId} /> :
         <>
-          <div className="w-full  p-4 pb-11 rounded-xl border border-[#F6F6F6] bg-[#FAFAFA]">
+
+          <div className="w-full h-fit  p-4 pb-11 rounded-xl border border-[#F6F6F6] bg-[#FAFAFA]">
             <h1 className="text-[15px] font-PeydaMedium pb-6 text-right" dir="rtl">
               اطلاعات پلی‌لیست
             </h1>
@@ -212,19 +226,15 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
                 </Button>
 
               </form>
-              <div className="w-full py-4">
-                <PlaylistTimeStatus
-                  start_date={new Date(startDate).toISOString().split('T')[0]}
-                  start_time={startTime || "00:00"}
-                  end_date={new Date(endDate).toISOString().split('T')[0]}
-                  end_time={endTime || "00:00"}
-                />
-              </div>
+
             </div>
           </div>
-          {playlistData?.name && <AddMusicToPlayList playlistName={playlistData.name} playlistId={playlistData.id} />}
+
         </>
       }
+
+
+
 
     </div>
 

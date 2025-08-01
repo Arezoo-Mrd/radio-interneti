@@ -13,8 +13,9 @@ import { GripVertical, Play, Heart } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
+import { useError } from "@/hooks/use-error";
 
-function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] }) {
+function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] | MusicType }) {
     const {
         attributes,
         listeners,
@@ -33,7 +34,7 @@ function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] 
     const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
 
     const { mutate } = useDeleteMusicMutation();
-
+    const { errorHandler } = useError()
 
     const deleteMusic = (id: string) => {
         mutate(item.id.toString(), {
@@ -41,17 +42,14 @@ function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] 
                 setAddPlaylistState((prev) => {
                     return {
                         ...prev,
-                        musics: prev.musics.filter((music) => music.music_id !== item.id)
+                        musics: prev.musics.filter((music) => music.id !== item.id)
                     }
                 })
                 toast.success("موزیک با موفقیت حذف شد")
 
             },
             onError: (error) => {
-                if (error instanceof Error) {
-                    toast.error(error.message)
-                }
-                toast.error("مشکلی در حذف موزیک رخ داده است")
+                errorHandler(error)
             }
         })
 

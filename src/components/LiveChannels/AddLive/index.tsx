@@ -17,13 +17,15 @@ import { MultiInput } from "@/components/ui/multi-input";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useError } from "@/hooks/use-error";
+
 
 
 const AddLive = () => {
     const { mutate: storeLive, isPending } = useStoreLiveMutation();
     const [presenter, setPresenter] = useState<string[]>([]);
     const router = useRouter()
-
+    const { errorHandler } = useError()
     const { register, formState: { errors }, setValue, watch } = useForm<CreateLiveSchemaType>({
         resolver: zodResolver(createLiveSchema),
         defaultValues: {
@@ -74,11 +76,7 @@ const AddLive = () => {
                     router.push("/live-channels")
                 },
                 onError: (error) => {
-                    if (error instanceof Error) {
-                        toast.error(error.message)
-                    } else {
-                        toast.error("خطا در ثبت لایو")
-                    }
+                    errorHandler(error)
                 }
             })
         }

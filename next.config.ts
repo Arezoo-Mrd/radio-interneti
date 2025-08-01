@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
             {
                 protocol: 'https',
                 hostname: "spr.livemst.com",
-
+                pathname: '/**',
             },
         ],
     }

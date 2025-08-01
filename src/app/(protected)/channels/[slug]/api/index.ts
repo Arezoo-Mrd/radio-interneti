@@ -1,11 +1,11 @@
+import { useError } from "@/hooks/use-error";
 import { getCookie } from "@/lib/cookies";
 import { fetchInstance } from "@/lib/fetch";
 import { appendQueryParams } from "@/lib/queryParams";
-import { ALL_PLAYLIST, DELETE_PLAYLIST } from "./constants";
-import { PlaylistResponseType } from "./api.types";
-import { DELETE_LIVE } from "@/app/(protected)/live-channels/api/constants";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { PlaylistResponseType } from "./api.types";
+import { ALL_PLAYLIST, DELETE_PLAYLIST } from "./constants";
 
 
 export const getAllPlaylist = async ({
@@ -25,6 +25,10 @@ export const getAllPlaylist = async ({
         path: params ? ALL_PLAYLIST + "?" + queryParams : ALL_PLAYLIST,
         options: {
             method: "GET",
+            cache: "no-store",
+            next: {
+                revalidate: 0
+            }
         },
         token: currentToken!,
     });
@@ -49,14 +53,17 @@ const deletePlaylist = async (id: string) => {
 };
 
 export const useDeletePlaylistMutation = () => {
+    const { errorHandler } = useError()
     return useMutation({
         mutationFn: deletePlaylist,
         mutationKey: ["delete-playlist"],
-        onSuccess() {
+        onSuccess(data) {
             toast.success("پلی‌لیست با موفقیت حذف شد");
+            window.location.reload();
+
         },
-        onError() {
-            toast.error("خطا در حذف پلی‌لیست");
+        onError(error) {
+            errorHandler(error)
         },
     });
 };

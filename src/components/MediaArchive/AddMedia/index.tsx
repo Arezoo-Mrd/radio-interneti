@@ -11,6 +11,7 @@ import AddNewMusic from "./Add";
 import Header from "./Header";
 import EditMusics from "./ModifyMusic";
 import { useGetFilterOptions } from "@/app/(protected)/media-archive/api";
+import { useError } from "@/hooks/use-error";
 
 
 const AddMedia = () => {
@@ -19,6 +20,7 @@ const AddMedia = () => {
 
     const { mutate, isPending } = useStoreMusicMutation();
     const { data: filterOptions } = useGetFilterOptions();
+    const { errorHandler } = useError()
 
     const [addMediaState, setAddMediaState] = useAtom(ADD_MEDIA_STATE);
 
@@ -67,7 +69,7 @@ const AddMedia = () => {
                     })
                 },
                 onError(error) {
-                    toast.error(error.message);
+                    errorHandler(error)
                 },
             }
         );
