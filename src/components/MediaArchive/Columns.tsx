@@ -233,7 +233,7 @@ const Columns = ({ playlists }: ColumnsProps) => {
                   duration: row.original.duration || 0,
                   cover: row.original.cover || null,
                   musicId: row.original.id,
-                  genreId: row.original.genre.id,
+                  genreId: row.original.genre?.id || undefined,
                   is_ads: row.original.is_ads,
                 }]
               })
