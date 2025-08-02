@@ -27,6 +27,9 @@ export const getAllMusic = async ({
     token?: string;
 }) => {
 
+    params!.per_page = params!.per_page || 10;
+    params!.page = params!.page || 1;
+
     const queryParams = appendQueryParams(params || {});
     const currentToken = token || (await getCookie("token"));
 

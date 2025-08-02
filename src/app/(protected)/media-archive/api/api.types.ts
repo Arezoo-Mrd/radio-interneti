@@ -36,7 +36,6 @@ export type GetAllMusicQueryParams = {
     channel_id?: number;
     page?: number;
     per_page?: number;
-    page_size?: number;
     sort_by?: string;
     sort_order?: "asc" | "desc";
 };

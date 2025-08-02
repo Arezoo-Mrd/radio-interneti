@@ -36,7 +36,7 @@ const MediaArchive = ({
         isLoading,
     } = useGetAllMusicQuery({
         page: page,
-        page_size: pageSize,
+        per_page: pageSize,
 
         ...(selectedFilters.artist.id && {
             artist: selectedFilters.artist.name,
@@ -91,7 +91,6 @@ const MediaArchive = ({
 
     const handlePageChange = (newPage: number) => {
         if (
-            newPage !== page &&
             newPage >= 1 &&
             newPage <= (currentPagination?.last_page || 1)
         ) {
