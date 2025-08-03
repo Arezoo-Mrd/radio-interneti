@@ -5,6 +5,7 @@ import { ALL_MUSIC } from "@/app/(protected)/media-archive/api/constants";
 import { getCookie } from "@/lib/cookies";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateLiveSchemaType } from "@/schema/live.schema";
+import { getAllLive } from "../../api";
 
 const postStoreLive = async (data: CreateLiveSchemaType) => {
     const currentToken = (await getCookie("token"));
@@ -25,12 +26,12 @@ const postStoreLive = async (data: CreateLiveSchemaType) => {
 
 
 export const useStoreLiveMutation = () => {
-    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: postStoreLive,
         mutationKey: ["store-live"],
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["live-channels"] });
+            getAllLive({})
         }
 
     });

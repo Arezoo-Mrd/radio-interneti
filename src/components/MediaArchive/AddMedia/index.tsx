@@ -12,6 +12,8 @@ import Header from "./Header";
 import EditMusics from "./ModifyMusic";
 import { useGetFilterOptions } from "@/app/(protected)/media-archive/api";
 import { useError } from "@/hooks/use-error";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const AddMedia = () => {
@@ -20,8 +22,9 @@ const AddMedia = () => {
 
     const { mutate, isPending } = useStoreMusicMutation();
     const { data: filterOptions } = useGetFilterOptions();
+    const queryClient = useQueryClient();
     const { errorHandler } = useError()
-
+    const router = useRouter();
     const [addMediaState, setAddMediaState] = useAtom(ADD_MEDIA_STATE);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,6 +70,7 @@ const AddMedia = () => {
                         editableAudios: newEditableAudios,
                         showEditMode: true,
                     })
+
                 },
                 onError(error) {
                     errorHandler(error)

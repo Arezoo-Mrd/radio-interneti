@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { useDeleteMusicMutation, useGetFilterOptions } from "@/app/(protected)/media-archive/api";
+import { getAllMusic, useDeleteMusicMutation, useGetFilterOptions } from "@/app/(protected)/media-archive/api";
 import { Input } from "@/components/ui/input";
 import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
 import {
@@ -26,6 +26,7 @@ import { useSetAtom } from "jotai";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
 import { FilterOptionsType } from "@/app/(protected)/media-archive/api/api.types";
 import { useError } from "@/hooks/use-error";
+import { useRouter } from "next/navigation";
 
 type ItemProps = {
     music: EditableAudioType;
@@ -43,6 +44,7 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
     const { mutate, isPending } = useUpdateMusicMutation()
     const { errorHandler } = useError()
     const { mutate: deleteMusic, isPending: isDeleting } = useDeleteMusicMutation()
+    const router = useRouter();
 
     const [coverPreview, setCoverPreview] = useState<string | null>(
         music.cover || null
@@ -124,7 +126,8 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
         }, {
             onSuccess: () => {
                 toast.success("موزیک با موفقیت ویرایش شد")
-                closeEditMode()
+                window.location.reload()
+
             },
             onError: (error) => {
                 errorHandler(error)
