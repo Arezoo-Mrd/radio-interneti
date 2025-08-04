@@ -3,6 +3,7 @@ import { getCookie } from "@/lib/cookies";
 import { fetchInstance } from "@/lib/fetch";
 
 const DASHBOARD_INFO = `${API_PREFIX}/dashboard/info`;
+const LOGS = `${API_PREFIX}/dashboard/logs`;
 
 
 
@@ -39,4 +40,26 @@ export const getDashboardInfo = async ({
 
     return response?.data;
 };
+
+
+export const getLogs = async ({
+    token,
+}: {
+    token?: string;
+}) => {
+    const currentToken = token || (await getCookie("token"));
+
+    const response = await fetchInstance<{
+        logs: string[];
+    }>({
+        path: LOGS,
+        options: {
+            method: "GET",
+        },
+        token: currentToken!,
+    });
+
+
+    return response?.data;
+}
 

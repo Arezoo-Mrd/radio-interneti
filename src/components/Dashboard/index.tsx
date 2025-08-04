@@ -6,7 +6,7 @@ import Chart from './Chart';
 import EmployeeList from './EmployeeList';
 import HeaderStates from './HeaderStates';
 
-const Dashboard = ({ dashboardInfo }: { dashboardInfo: DashboardInfo | undefined }) => {
+const Dashboard = ({ dashboardInfo, logs }: { dashboardInfo: DashboardInfo | undefined, logs: string[] }) => {
 
     return (
         <div className="min-h-screen bg-gray-50 w-full p-6" dir="rtl">
@@ -17,7 +17,7 @@ const Dashboard = ({ dashboardInfo }: { dashboardInfo: DashboardInfo | undefined
                     <EmployeeList dashboardInfo={dashboardInfo} />
                 </div>
                 <div className="w-full overflow-x-auto bg-white my-6 rounded-xl flex flex-col justify-between overflow-y-hidden">
-                    <ActivityLogs />
+                    <ActivityLogs logs={logs} />
                 </div>
 
             </div>

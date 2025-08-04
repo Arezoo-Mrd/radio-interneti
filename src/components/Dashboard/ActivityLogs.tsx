@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { flexRender } from "@tanstack/react-table";
 
 
-const ActivityLogs = () => {
+const ActivityLogs = ({ logs }: { logs: string[] }) => {
 
     const activities = [
         { status: 'success', level: 'Info', type: 'Server Restart', time: '۱۴۰۲/۱۲/۱۹, ۱۲:۰۴' },
@@ -73,53 +73,58 @@ const ActivityLogs = () => {
         getCoreRowModel: getCoreRowModel(),
     });
     return (
-        <Table className="">
-            <TableHeader className="py-4! border-t-0!">
-                {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header, index) => {
-                            return (
-                                <TableHead
-                                    key={header.id + index}
-                                    className={`${header.id === "name" ? "text-right! px-10" : "text-center"
-                                        } py-4! `}
-                                >
-                                    {header.isPlaceholder
-                                        ? null
-                                        : flexRender(header.column.columnDef.header, header.getContext())}
-                                </TableHead>
-                            );
-                        })}
-                    </TableRow>
-                ))}
-            </TableHeader>
-            <TableBody>
-                {table.getRowModel().rows?.length ? (
-                    table.getRowModel().rows.map((row) => {
-                        const isSelected = row.getIsSelected();
-                        return (
-                            <TableRow
-                                className={`py-0! h-15`}
-                                key={row.id}
-                                data-state={isSelected && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell, index) => (
-                                    <TableCell className="text-center py-0!" key={cell.id + index}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        );
-                    })
-                ) : (
-                    <TableRow>
-                        <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
-                            هیچ نتیجه‌ای یافت نشد.
-                        </TableCell>
-                    </TableRow>
-                )}
-            </TableBody>
-        </Table>
+        // <Table className="">
+        //     <TableHeader className="py-4! border-t-0!">
+        //         {table.getHeaderGroups().map((headerGroup) => (
+        //             <TableRow key={headerGroup.id}>
+        //                 {headerGroup.headers.map((header, index) => {
+        //                     return (
+        //                         <TableHead
+        //                             key={header.id + index}
+        //                             className={`${header.id === "name" ? "text-right! px-10" : "text-center"
+        //                                 } py-4! `}
+        //                         >
+        //                             {header.isPlaceholder
+        //                                 ? null
+        //                                 : flexRender(header.column.columnDef.header, header.getContext())}
+        //                         </TableHead>
+        //                     );
+        //                 })}
+        //             </TableRow>
+        //         ))}
+        //     </TableHeader>
+        //     <TableBody>
+        //         {table.getRowModel().rows?.length ? (
+        //             table.getRowModel().rows.map((row) => {
+        //                 const isSelected = row.getIsSelected();
+        //                 return (
+        //                     <TableRow
+        //                         className={`py-0! h-15`}
+        //                         key={row.id}
+        //                         data-state={isSelected && "selected"}
+        //                     >
+        //                         {row.getVisibleCells().map((cell, index) => (
+        //                             <TableCell className="text-center py-0!" key={cell.id + index}>
+        //                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        //                             </TableCell>
+        //                         ))}
+        //                     </TableRow>
+        //                 );
+        //             })
+        //         ) : (
+        //             <TableRow>
+        //                 <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
+        //                     هیچ نتیجه‌ای یافت نشد.
+        //                 </TableCell>
+        //             </TableRow>
+        //         )}
+        //     </TableBody>
+        // </Table>
+        <div className="flex flex-col bg-white p-4 shadow-lg rounded-lg gap-4">
+            {logs.map((log, index) => (
+                <div dir="ltr" className="bg-gray-100 p-4 rounded-lg" key={index}>{log}</div>
+            ))}
+        </div>
 
     )
 }

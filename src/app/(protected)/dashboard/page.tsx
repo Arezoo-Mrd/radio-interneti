@@ -1,5 +1,5 @@
 import Dashboard from "@/components/Dashboard";
-import { getDashboardInfo } from "@/app/(protected)/dashboard/api";
+import { getDashboardInfo, getLogs } from "@/app/(protected)/dashboard/api";
 import { cookies } from "next/headers";
 
 export default async function Home() {
@@ -9,5 +9,9 @@ export default async function Home() {
     });
 
 
-    return <Dashboard dashboardInfo={dashboardInfo} />
+    const logs = await getLogs({
+        token,
+    });
+
+    return <Dashboard dashboardInfo={dashboardInfo} logs={logs?.logs || []} />
 }
