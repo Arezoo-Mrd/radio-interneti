@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/radio-interneti.iml
+/.idea/vcs.xml
