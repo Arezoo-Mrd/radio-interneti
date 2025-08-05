@@ -5,4 +5,4 @@ export const GET_ALL_GENRES = `${PREFIX_API}/music/genre/all`;
 export const GET_FILTER_OPTIONS = `${PREFIX_API}/music/properties`;
 export const DELETE_MUSIC = (id: string) => `${PREFIX_API}/music/delete/${id}`;
 export const ADD_MEDIAS_TO_PLAYLIST = `${PREFIX_API}/music/assign`;
-export const ASSIGN_BULK_MEDIAS_TO_PLAYLIST = `${PREFIX_API}/music/assign-bulk`;
+export const ASSIGN_BULK_MEDIAS_TO_PLAYLIST = `${PREFIX_API}/music/assign-bulk?add`;
