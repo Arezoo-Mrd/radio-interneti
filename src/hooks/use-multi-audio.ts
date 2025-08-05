@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useRef, useEffect, useCallback } from "react";
+import { parseBlob } from "music-metadata-browser";
+
 
 export interface AudioFileWithId extends File {
   id: string;
   src: string;
+  cover: string | null;
 }
 
 export interface AudioState {
@@ -197,29 +200,36 @@ export function useMultiAudio(): UseMultiAudioReturn {
 
   // Add audio file with better validation
   const addAudioFile = useCallback(
-    (file: File) => {
-
-      // Validate file type
+    async (file: File) => {
       if (!file.type.startsWith("audio/")) {
         console.error("Invalid file type:", file.type);
         return;
       }
 
-      // Generate unique ID and create object URL
       const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
       let src: string;
       try {
         src = URL.createObjectURL(file);
-
       } catch (error) {
         return;
       }
 
-      // Create extended file object
-      const audioFileWithId: AudioFileWithId = Object.assign(file, { id, src });
 
-      // Update state
+      let cover: string | null = null;
+      try {
+        const metadata = await parseBlob(file);
+        const picture = metadata.common.picture?.[0];
+        if (picture) {
+          const blob = new Blob([picture.data], { type: picture.format });
+          cover = URL.createObjectURL(blob);
+        }
+      } catch (err) {
+        console.warn("Could not extract cover from audio:", err);
+      }
+
+      const audioFileWithId: AudioFileWithId = Object.assign(file, { id, src, cover });
+
       setAudioFiles((prev) => {
         const newFiles = [...prev, audioFileWithId];
         audioFilesRef.current = newFiles;
@@ -231,7 +241,6 @@ export function useMultiAudio(): UseMultiAudioReturn {
         [id]: initializeAudioState(id),
       }));
 
-      // Create audio element
       try {
         audioRefs.current[id] = createAudioElement(audioFileWithId);
       } catch (error) {
@@ -244,6 +253,7 @@ export function useMultiAudio(): UseMultiAudioReturn {
     },
     [initializeAudioState, createAudioElement, updateAudioState]
   );
+
 
   // Remove audio file with proper cleanup
   const removeAudioFile = useCallback(

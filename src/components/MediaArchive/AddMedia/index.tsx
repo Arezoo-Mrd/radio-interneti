@@ -55,17 +55,19 @@ const AddMedia = () => {
             {
                 onSuccess(data) {
                     toast.success("عملیات با موفقیت انجام شد!");
-                    const newEditableAudios = audioFiles.map((file) => ({
-                        id: file.id,
-                        artist: "",
-                        title: file.name.replace(/\.[^/.]+$/, ""),
-                        duration: audioStates[file.id]?.duration || 0,
-                        cover: null,
-                        musicId: data?.data.id,
-                        is_ads: false
-                        // genreId: data?.data.genre_id,
+                    const newEditableAudios = audioFiles.map((file) => {
+                        return ({
+                            id: file.id,
+                            artist: data?.data.artist || "",
+                            title: file.name.replace(/\.[^/.]+$/, ""),
+                            duration: audioStates[file.id]?.duration || 0,
+                            cover: file.cover || null,
+                            musicId: data?.data.id,
+                            is_ads: false,
+                            // genreId: data?.data.genre_id,
 
-                    }));
+                        })
+                    });
                     setAddMediaState({
                         editableAudios: newEditableAudios,
                         showEditMode: true,
