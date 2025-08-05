@@ -58,7 +58,7 @@ const AddMedia = () => {
                     const newEditableAudios = audioFiles.map((file) => {
                         return ({
                             id: file.id,
-                            artist: data?.data.artist || "",
+                            artist: data?.data.artist || file.artist,
                             title: file.name.replace(/\.[^/.]+$/, ""),
                             duration: audioStates[file.id]?.duration || 0,
                             cover: file.cover || null,

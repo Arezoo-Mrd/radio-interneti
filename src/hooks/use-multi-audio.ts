@@ -7,6 +7,7 @@ export interface AudioFileWithId extends File {
   id: string;
   src: string;
   cover: string | null;
+  artist: string;
 }
 
 export interface AudioState {
@@ -217,8 +218,10 @@ export function useMultiAudio(): UseMultiAudioReturn {
 
 
       let cover: string | null = null;
+      let artist: string | null = null;
       try {
         const metadata = await parseBlob(file);
+        artist = metadata.common.artist?.[0] || null;
         const picture = metadata.common.picture?.[0];
         if (picture) {
           const blob = new Blob([picture.data], { type: picture.format });
@@ -228,7 +231,7 @@ export function useMultiAudio(): UseMultiAudioReturn {
         console.warn("Could not extract cover from audio:", err);
       }
 
-      const audioFileWithId: AudioFileWithId = Object.assign(file, { id, src, cover });
+      const audioFileWithId: AudioFileWithId = Object.assign(file, { id, src, cover, artist: artist || "" });
 
       setAudioFiles((prev) => {
         const newFiles = [...prev, audioFileWithId];
