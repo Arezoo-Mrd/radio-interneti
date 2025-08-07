@@ -1,89 +1,29 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 
 import { usePutAssignBulkMediasToPlaylistMutation } from "@/app/(protected)/media-archive/api";
 import { FilterOptionsType } from "@/app/(protected)/media-archive/api/api.types";
 import { Loader2 } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Checkbox } from "../ui/checkbox";
-import { Dialog, DialogTrigger } from "../ui/dialog";
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
+
 import { useError } from "@/hooks/use-error";
 
 export function AddMediaDialog({
-    closeBtnRef,
-    open,
-    setOpen,
     playlists,
-    musicId
+    musicId,
+    closeBtnRef,
+    className
 }: {
     closeBtnRef: React.RefObject<HTMLButtonElement | null>;
-    open: boolean;
-    setOpen: Dispatch<SetStateAction<boolean>>;
     playlists: FilterOptionsType["playlists"];
     musicId: number;
-}) {
-    const isDesktop = useMediaQuery("(min-width: 768px)");
-
-    if (isDesktop) {
-        return (
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-[425px] max-h-[70vh] overflow-y-auto px-8 py-6">
-                    <DialogTrigger ref={closeBtnRef}></DialogTrigger>
-                    <DialogHeader className=" flex justify-start w-full text-right border-b! border-[#EDEDED] pb-4">
-                        <DialogTitle>افزودن به پلی‌لیست</DialogTitle>
-                        <DialogDescription>
-                            پلی‌لیست مورد نظر خود را انتخاب کنید.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <MediaContainer ref={closeBtnRef} playlists={playlists} musicId={musicId} />
-                </DialogContent>
-            </Dialog>
-        );
-    }
-
-    return (
-        <Drawer open={open} onOpenChange={setOpen}>
-            <DrawerTrigger></DrawerTrigger>
-            <DrawerContent className="text-right">
-                <DrawerHeader className="text-left border-b! border-[#EDEDED] pb-4">
-                    <DrawerTitle>افزودن به پلی‌لیست</DrawerTitle>
-                    <DrawerDescription>
-                        پلی‌لیست مورد نظر خود را انتخاب کنید.
-                    </DrawerDescription>
-                </DrawerHeader>
-                <MediaContainer className="px-4" ref={closeBtnRef} playlists={playlists} musicId={musicId} />
-                <DrawerFooter className="pt-2">
-                    <DrawerClose ref={closeBtnRef}></DrawerClose>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
-    );
-}
-
-function MediaContainer({
-    className,
-    ref,
-    playlists,
-    musicId
-}: {
-
     className?: string;
-    ref: React.RefObject<HTMLButtonElement | null>;
-    playlists: FilterOptionsType["playlists"];
-    musicId: number;
 }) {
+
 
     const { mutate: assignBulkMediasToPlaylist, isPending } = usePutAssignBulkMediasToPlaylistMutation();
     const { errorHandler } = useError()
@@ -93,8 +33,6 @@ function MediaContainer({
     } = useForm<{
         playlistId: number;
     }>();
-
-
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -127,7 +65,7 @@ function MediaContainer({
         }, {
             onSuccess: () => {
                 toast.success("موزیک با موفقیت افزوده شد");
-                ref.current?.click();
+                closeBtnRef.current?.click();
             },
             onError: (error) => {
                 errorHandler(error)
@@ -135,6 +73,7 @@ function MediaContainer({
             },
         });
     };
+
 
 
     return (
@@ -178,7 +117,7 @@ function MediaContainer({
                 <Button
                     variant="outline"
                     className="w-1/2"
-                    onClick={() => ref.current?.click()}
+                    onClick={() => closeBtnRef.current?.click()}
                     type="button"
                 >
                     انصراف
@@ -186,4 +125,7 @@ function MediaContainer({
             </div>
         </form>
     );
+
+
+
 }

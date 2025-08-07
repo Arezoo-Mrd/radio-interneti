@@ -16,6 +16,7 @@ import { Checkbox } from "../ui/checkbox";
 import { AddMediaDialog } from "./AddMediaDialog";
 import { toast } from "sonner";
 import Image from "next/image";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 type ColumnsProps = {
   playlists: FilterOptionsType["playlists"];
@@ -29,7 +30,8 @@ const Columns = ({ playlists }: ColumnsProps) => {
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
 
-  const [isShowAddMediaDialog, setIsShowAddMediaDialog] = useState(false);
+  const [showMediaDialog, setShowMediaDialog] = useState<boolean>(false);
+  const [musicId, setMusicId] = useState<number | null>(null);
   const setAddMediaState = useSetAtom(ADD_MEDIA_STATE);
 
   const columns: ColumnDef<MusicType>[] = [
@@ -200,6 +202,7 @@ const Columns = ({ playlists }: ColumnsProps) => {
       accessorKey: "id",
       header: "عملیات",
       cell: ({ row }) => {
+
         return (
           <div className="flex items-center justify-center gap-2">
             <Button
@@ -218,7 +221,10 @@ const Columns = ({ playlists }: ColumnsProps) => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsShowAddMediaDialog(true)}
+              onClick={() => {
+                setShowMediaDialog(true)
+                setMusicId(row.original.id)
+              }}
               className="bg-[#7367F0]/20 w-6 h-6"
             >
               <MusicSquareAdd size={20} color="#7367F0" variant="Outline" />
@@ -240,13 +246,27 @@ const Columns = ({ playlists }: ColumnsProps) => {
             }} variant="ghost" size="icon" className="bg-[#7367F0]/20 w-6 h-6 cursor-pointer">
               <Edit2 size={20} color="#7367F0" variant="Linear" />
             </Button>
-            <AddMediaDialog
-              playlists={playlists}
-              open={isShowAddMediaDialog}
-              setOpen={setIsShowAddMediaDialog}
-              closeBtnRef={closeBtnRef}
-              musicId={row.original.id}
-            />
+            <Dialog open={showMediaDialog} onOpenChange={() => {
+              setShowMediaDialog(false)
+              setMusicId(null)
+            }}>
+              <DialogContent>
+                <DialogTrigger ref={closeBtnRef}></DialogTrigger>
+                <DialogHeader className=" flex justify-start w-full text-right border-b! border-[#EDEDED] pb-4">
+                  <DialogTitle>افزودن به پلی‌لیست</DialogTitle>
+                  <DialogDescription>
+                    پلی‌لیست مورد نظر خود را انتخاب کنید.
+                  </DialogDescription>
+                </DialogHeader>
+                <AddMediaDialog
+                  playlists={playlists}
+                  closeBtnRef={closeBtnRef}
+                  musicId={musicId || 0}
+                />
+
+              </DialogContent>
+            </Dialog>
+
           </div>
         );
       },

@@ -1,17 +1,22 @@
 import { useAddMediasToPlaylistMutation, useGetAllMusicQuery } from "@/app/(protected)/media-archive/api";
+import { MusicType } from "@/app/(protected)/media-archive/api/api.types";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { Loader2 } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useEffect, useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
+
 
 const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElement | null>, playlistId: number }) => {
-    const [search, setSearch] = useState("")
+    const [searchInput, setSearchInput] = useState("");
+    const [search, setSearch] = useState("");
+
+
     const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
     const {
         handleSubmit,
@@ -20,10 +25,16 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
         musicId: number;
     }>();
 
+
+    const [page, setPage] = useState(1)
+
     const queryClient = useQueryClient();
 
+
+
     const { isPending, mutate: addMediasToPlaylist } = useAddMediasToPlaylistMutation()
-    const { data: allMusics, isLoading } = useGetAllMusicQuery({}, true)
+    const { data: allMusics, isLoading } = useGetAllMusicQuery({ page, per_page: 50, title: search }, true)
+
 
 
     const { fields, append, remove } = useFieldArray({
@@ -31,6 +42,23 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
         name: "musicId" as never,
 
     })
+
+
+
+
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            setSearch(searchInput);
+            setPage(1);
+
+        }, 500);
+
+        return () => clearTimeout(delayDebounce);
+    }, [searchInput]);
+
+
+
+
 
 
     useEffect(() => {
@@ -44,14 +72,7 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
     };
 
 
-    const filteredMusics = useMemo(() => {
-        if (search.length > 0) {
-            return allMusics?.data.filter((music) => {
-                return music.title.toLowerCase().includes(search.toLowerCase())
-            })
-        }
-        return allMusics?.data
-    }, [allMusics, search])
+
 
     const onSubmit = (data: any) => {
         if (data.musicId.length === 0) {
@@ -101,13 +122,11 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
         isLoading ? <div className="flex items-center justify-center h-full" >
             <Loader2 className="w-11 h-11 text-primary-main animate-spin" />
         </div > :
-            <>
+            <div>
                 <Input
                     placeholder="جستجو..."
-                    value={search}
-                    onChange={(event) =>
-                        setSearch(event.target.value)
-                    }
+                    value={searchInput}
+                    onChange={(event) => setSearchInput(event.target.value)}
                     className="w-full pr-10 h-10 shadow-none"
                 />
 
@@ -115,8 +134,8 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
                     onSubmit={handleSubmit(onSubmit)}
                     className={("grid items-start gap-6")}
                 >
-                    <div className="flex flex-col gap-1">
-                        {filteredMusics?.length ? filteredMusics
+                    <div className="flex flex-col gap-1 "  >
+                        {allMusics?.data?.length ? allMusics.data
                             .map((music) => {
                                 return (
                                     <div
@@ -145,6 +164,7 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
 
                     </div>
 
+
                     <div className="flex gap-2 w-full  items-center justify-between">
                         <Button disabled={isPending} className="bg-primary-button w-1/2" type="submit">
                             {isPending ? <div className="flex items-center gap-2">
@@ -162,7 +182,7 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
                         </Button>
                     </div>
                 </form>
-            </>
+            </div>
     );
 
 }

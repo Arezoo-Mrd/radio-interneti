@@ -116,17 +116,7 @@ export function useMultiAudio(): UseMultiAudioReturn {
       };
 
       const handleError = (e: Event) => {
-        console.error("Audio error details:", {
-          error: e,
-          audioError: audio.error,
-          networkState: audio.networkState,
-          readyState: audio.readyState,
-          src: audio.src,
-          originalSrc: file.src,
-          fileName: file.name,
-          fileType: file.type,
-          fileSize: file.size,
-        });
+
 
         let errorMessage = "Failed to load audio file";
 
@@ -187,7 +177,6 @@ export function useMultiAudio(): UseMultiAudioReturn {
       try {
         audio.src = file.src;
       } catch (error) {
-        console.error("Error setting audio src:", error);
         updateAudioState(file.id, {
           isLoading: false,
           error: "Failed to set audio source",
@@ -203,7 +192,6 @@ export function useMultiAudio(): UseMultiAudioReturn {
   const addAudioFile = useCallback(
     async (file: File) => {
       if (!file.type.startsWith("audio/")) {
-        console.error("Invalid file type:", file.type);
         return;
       }
 
@@ -247,7 +235,6 @@ export function useMultiAudio(): UseMultiAudioReturn {
       try {
         audioRefs.current[id] = createAudioElement(audioFileWithId);
       } catch (error) {
-        console.error("Failed to create audio element:", error);
         updateAudioState(id, {
           isLoading: false,
           error: "Failed to create audio player",
@@ -317,7 +304,6 @@ export function useMultiAudio(): UseMultiAudioReturn {
     async (id: string) => {
       const audio = audioRefs.current[id];
       if (!audio) {
-        console.error("Audio element not found for id:", id);
         return;
       }
 
@@ -342,7 +328,6 @@ export function useMultiAudio(): UseMultiAudioReturn {
       try {
         await audio.play();
       } catch (error: any) {
-        console.error("Failed to play audio:", error);
         updateAudioState(id, {
           error: `Failed to play audio: ${error.message}`,
           isLoading: false,

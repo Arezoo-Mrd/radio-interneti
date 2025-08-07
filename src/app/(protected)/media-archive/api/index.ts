@@ -3,7 +3,7 @@ import { getCookie } from "@/lib/cookies";
 import { fetchInstance, SuccessResponse } from "@/lib/fetch";
 import { appendQueryParams } from "@/lib/queryParams";
 import { AddMediasToPlaylistSchemaType } from "@/schema/media.schema";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, QueryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     AssignBulkMediasToPlaylistRequestType,
     FilterOptionsType,
@@ -119,6 +119,8 @@ export const useGetAllMusicQuery = (params?: GetAllMusicQueryParams, isEnabled: 
         queryKey: ["all-music", params],
         queryFn: () => getAllMusic({ params: params }),
         enabled: isEnabled,
+
+
     });
 };
 

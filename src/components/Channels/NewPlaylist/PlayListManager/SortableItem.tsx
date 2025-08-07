@@ -1,19 +1,19 @@
+import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
+import { useDeleteMusicMutation } from "@/app/(protected)/media-archive/api";
 import { MusicType } from "@/app/(protected)/media-archive/api/api.types";
 import { Button } from "@/components/ui/button";
-import { useSortable } from "@dnd-kit/sortable";
-import { Trash } from "iconsax-react";
-import { convertToFaNum } from "@/lib/convertToFaNum";
-import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
-import { toast } from "sonner";
-import { useAtom } from "jotai";
-import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
-import { useDeleteMusicMutation } from "@/app/(protected)/media-archive/api";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Play, Heart } from "lucide-react";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
 import { useError } from "@/hooks/use-error";
+import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
+import { convertToFaNum } from "@/lib/convertToFaNum";
+import { cn } from "@/lib/utils";
+import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Trash } from "iconsax-react";
+import { useAtom } from "jotai";
+import { GripVertical, Heart, Play } from "lucide-react";
+import Image from "next/image";
+import { toast } from "sonner";
 
 function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] | MusicType }) {
     const {
@@ -32,6 +32,8 @@ function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] 
 
 
     const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+
+
 
     const { mutate } = useDeleteMusicMutation();
     const { errorHandler } = useError()
@@ -123,7 +125,18 @@ function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] 
                         variant="ghost"
                         size="icon"
                         className="bg-[#F11A3B]/20 cursor-pointer w-6 h-6"
-                        onClick={() => deleteMusic(item.id.toString())}
+                        onClick={() => {
+                            const filteredMusics = addPlaylistState.musics.filter((music) => music.id !== item.id)
+                            // TOOD: add api CALL
+                            setAddPlaylistState((prev) => {
+                                return {
+                                    ...prev,
+                                    musics: filteredMusics
+                                }
+                            })
+
+
+                        }}
                     >
                         <Trash size={20} color="#F11A3B" variant="Linear" />
                     </Button>
