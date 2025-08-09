@@ -4,7 +4,7 @@ import { Heart } from "iconsax-react";
 const EmployeeList = ({ dashboardInfo }: { dashboardInfo: DashboardInfo | undefined }) => {
 
     return (
-        <div className="bg-white rounded-lg w-full shadow-sm md:h-[354px]">
+        <div className="bg-white rounded-lg w-full shadow-sm overflow-y-auto md:h-[354px]">
             <div className="p-6 ">
                 <h2 className="text-lg font-PeydaBold text-black">۵ موزیک برتر از دید کاربران</h2>
             </div>

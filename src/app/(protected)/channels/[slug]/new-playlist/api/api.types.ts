@@ -80,3 +80,11 @@ export type SinglePlaylistResponseType = {
         position: number
     }[]
 }
+
+
+export type DetachMusicFromPlaylistType = {
+    playlist_id: number,
+    musics: {
+        music_id: number,
+    }[]
+}

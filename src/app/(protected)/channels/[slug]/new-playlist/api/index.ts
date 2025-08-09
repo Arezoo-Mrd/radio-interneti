@@ -3,8 +3,8 @@ import { fetchInstance } from "@/lib/fetch";
 import { appendQueryParams } from "@/lib/queryParams";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PlaylistResponseType, SinglePlaylistResponseType, StorePlaylistResponseType, StorePlaylistType, UpdateMusicPositionType } from "./api.types";
-import { ALL_PLAYLIST, DELETE_PLAYLIST, SHOW_PLAYLIST, STORE_PLAYLIST, UPDATE_MUSIC_POSITION, UPDATE_PLAYLIST } from "./constants";
+import { DetachMusicFromPlaylistType, PlaylistResponseType, SinglePlaylistResponseType, StorePlaylistResponseType, StorePlaylistType, UpdateMusicPositionType } from "./api.types";
+import { ALL_PLAYLIST, DELETE_PLAYLIST, DETACH_MUSIC_FROM_PLAYLIST, SHOW_PLAYLIST, STORE_PLAYLIST, UPDATE_MUSIC_POSITION, UPDATE_PLAYLIST } from "./constants";
 import { useError } from "@/hooks/use-error";
 
 
@@ -134,6 +134,20 @@ const deletePlaylist = async (id: string) => {
     return response;
 };
 
+const detachMusicFromPlaylist = async (data: DetachMusicFromPlaylistType) => {
+    const currentToken = await getCookie("token");
+    const response = await fetchInstance({
+        path: DETACH_MUSIC_FROM_PLAYLIST,
+        options: {
+            method: "DELETE",
+            body: JSON.stringify(data),
+        },
+        token: currentToken!,
+    });
+
+    return response;
+}
+
 export const useDeletePlaylistMutation = () => {
     const { errorHandler } = useError()
     return useMutation({
@@ -208,3 +222,17 @@ export const useGetSinglePlaylistQuery = (id: string) => {
         enabled: !!id,
     });
 }
+
+export const useDetachMusicFromPlaylistMutation = () => {
+    const { errorHandler } = useError()
+    return useMutation({
+        mutationFn: detachMusicFromPlaylist,
+        mutationKey: ["detach-music-from-playlist"],
+        onSuccess() {
+            toast.success("موزیک با موفقیت از پلی‌لیست حذف شد");
+        },
+        onError(error) {
+            errorHandler(error)
+        },
+    });
+}   

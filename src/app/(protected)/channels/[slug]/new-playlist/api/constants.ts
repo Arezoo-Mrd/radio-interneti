@@ -9,3 +9,4 @@ export const STORE_PLAYLIST = `${API_PREFIX}/playlist/store`;
 export const SHOW_PLAYLIST = (id: string) => `${API_PREFIX}/playlist/show/${id}`;
 
 export const UPDATE_MUSIC_POSITION = `${API_PREFIX}/playlist/update-position`
+export const DETACH_MUSIC_FROM_PLAYLIST = `${API_PREFIX}/music/detach`;

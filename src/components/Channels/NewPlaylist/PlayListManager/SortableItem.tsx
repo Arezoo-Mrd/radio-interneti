@@ -1,8 +1,7 @@
+import { useDetachMusicFromPlaylistMutation } from "@/app/(protected)/channels/[slug]/new-playlist/api";
 import { SinglePlaylistResponseType } from "@/app/(protected)/channels/[slug]/new-playlist/api/api.types";
-import { useDeleteMusicMutation } from "@/app/(protected)/media-archive/api";
 import { MusicType } from "@/app/(protected)/media-archive/api/api.types";
 import { Button } from "@/components/ui/button";
-import { useError } from "@/hooks/use-error";
 import { convertTimeToFarsi } from "@/lib/convertTimeToFarsi";
 import { convertToFaNum } from "@/lib/convertToFaNum";
 import { cn } from "@/lib/utils";
@@ -13,7 +12,6 @@ import { Trash } from "iconsax-react";
 import { useAtom } from "jotai";
 import { GripVertical, Heart, Play } from "lucide-react";
 import Image from "next/image";
-import { toast } from "sonner";
 
 function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] | MusicType }) {
     const {
@@ -35,23 +33,23 @@ function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] 
 
 
 
-    const { mutate } = useDeleteMusicMutation();
-    const { errorHandler } = useError()
+    const { mutate: detachMusicFromPlaylist, isPending: isDetachingMusicFromPlaylist } = useDetachMusicFromPlaylistMutation();
 
     const deleteMusic = (id: string) => {
-        mutate(item.id.toString(), {
+        const filteredMusics = addPlaylistState.musics.filter((music) => music.id !== Number(id))
+        detachMusicFromPlaylist({
+            playlist_id: addPlaylistState.playListId,
+            musics: [{
+                music_id: Number(id)
+            }]
+        }, {
             onSuccess: () => {
                 setAddPlaylistState((prev) => {
                     return {
                         ...prev,
-                        musics: prev.musics.filter((music) => music.id !== item.id)
+                        musics: filteredMusics
                     }
                 })
-                toast.success("موزیک با موفقیت حذف شد")
-
-            },
-            onError: (error) => {
-                errorHandler(error)
             }
         })
 
@@ -126,15 +124,7 @@ function SortableItem({ item }: { item: SinglePlaylistResponseType["musics"][0] 
                         size="icon"
                         className="bg-[#F11A3B]/20 cursor-pointer w-6 h-6"
                         onClick={() => {
-                            const filteredMusics = addPlaylistState.musics.filter((music) => music.id !== item.id)
-                            // TOOD: add api CALL
-                            setAddPlaylistState((prev) => {
-                                return {
-                                    ...prev,
-                                    musics: filteredMusics
-                                }
-                            })
-
+                            deleteMusic(item.id.toString())
 
                         }}
                     >

@@ -41,7 +41,7 @@ export default function PlaylistTimeStatus({
             <div className="text-right w-full">
                 <h3 className={`font-bold mb-1 ${color}`}>مدیریت زمان پلی لیست</h3>
                 <p className="text-sm text-gray-600 mb-2">
-                    توجه داشته باشید: مجموع مدت زمان موزیک‌های پلی‌لیست نمی‌تواند از {convertTimeToFarsi(durationSeconds)} دقیقه بیشتر باشد.
+                    توجه داشته باشید: مجموع مدت زمان موزیک‌های پلی‌لیست نمی‌تواند از {convertTimeToFarsi(durationSeconds)} ساعت بیشتر باشد.
                 </p>
                 <button className={`border rounded px-3 py-1 text-sm ${color}`}>
                     {formatTime(start_date, start_time)} الی {formatTime(end_date, end_time)}
