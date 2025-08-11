@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Checkbox } from "../ui/checkbox";
 
 import { useError } from "@/hooks/use-error";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function AddMediaDialog({
     playlists,
@@ -33,6 +34,7 @@ export function AddMediaDialog({
     } = useForm<{
         playlistId: number;
     }>();
+    const queryClient = useQueryClient();
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -65,6 +67,7 @@ export function AddMediaDialog({
         }, {
             onSuccess: () => {
                 toast.success("موزیک با موفقیت افزوده شد");
+                queryClient.invalidateQueries({ queryKey: ["all-music"] });
                 closeBtnRef.current?.click();
             },
             onError: (error) => {
