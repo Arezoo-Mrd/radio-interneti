@@ -52,6 +52,7 @@ export const getPlaylist = async (id: string, token?: string) => {
         path: SHOW_PLAYLIST(id),
         options: {
             method: "GET",
+            cache: "no-store",
         },
         token: currentToken!,
     });
@@ -183,6 +184,9 @@ export const useGetPlaylistQuery = (id: string) => {
         queryKey: ["playlist", id],
         queryFn: () => getPlaylist(id),
         enabled: !!id,
+        gcTime: 0,
+        refetchOnWindowFocus: true,
+        staleTime: 0,
     });
 }
 

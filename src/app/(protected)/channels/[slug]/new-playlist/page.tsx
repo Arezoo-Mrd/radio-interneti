@@ -1,3 +1,6 @@
+export const fetchCache = "force-no-store";
+
+
 import { NewPlaylist } from "@/components/Channels/NewPlaylist";
 import { cookies } from "next/headers";
 import { getPlaylist } from "./api";

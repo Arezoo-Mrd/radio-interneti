@@ -17,6 +17,7 @@ import { AddMediaDialog } from "./AddMediaDialog";
 import { toast } from "sonner";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { getPlaylist } from "@/app/(protected)/channels/[slug]/new-playlist/api";
 
 type ColumnsProps = {
   playlists: FilterOptionsType["playlists"];
@@ -212,6 +213,7 @@ const Columns = ({ playlists }: ColumnsProps) => {
               onClick={() => deleteMusic(row.original.id.toString(), {
                 onSuccess: () => {
                   queryClient.invalidateQueries({ queryKey: ["all-music"] });
+                  getPlaylist(row.original.id.toString());
                   toast.success("موزیک با موفقیت حذف شد")
                 }
               })}

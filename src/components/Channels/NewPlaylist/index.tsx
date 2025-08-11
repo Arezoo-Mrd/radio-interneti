@@ -75,6 +75,7 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
         },
       }, {
         onSuccess: (data) => {
+
           data && setPlaylistData({
             name: data.data.name,
             id: data.data.id,
