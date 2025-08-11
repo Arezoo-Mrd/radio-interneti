@@ -33,6 +33,7 @@ export const getDashboardInfo = async ({
         path: DASHBOARD_INFO,
         options: {
             method: "GET",
+            cache: "no-store",
         },
         token: currentToken!,
     });
@@ -55,6 +56,7 @@ export const getLogs = async ({
         path: LOGS,
         options: {
             method: "GET",
+            cache: "no-store",
         },
         token: currentToken!,
     });

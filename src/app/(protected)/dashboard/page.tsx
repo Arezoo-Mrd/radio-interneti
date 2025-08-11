@@ -13,5 +13,6 @@ export default async function Home() {
         token,
     });
 
+
     return <Dashboard dashboardInfo={dashboardInfo} logs={logs?.logs || []} />
 }

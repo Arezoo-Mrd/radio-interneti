@@ -2,6 +2,8 @@ import { DashboardInfo } from "@/app/(protected)/dashboard/api";
 import { Heart } from "iconsax-react";
 
 const EmployeeList = ({ dashboardInfo }: { dashboardInfo: DashboardInfo | undefined }) => {
+    const totalLikes = dashboardInfo?.most_liked_musics.reduce((acc, curr) => acc + curr.likes, 0) || 0;
+
 
     return (
         <div className="bg-white rounded-lg w-full shadow-sm overflow-y-auto md:h-[354px]">
@@ -19,7 +21,7 @@ const EmployeeList = ({ dashboardInfo }: { dashboardInfo: DashboardInfo | undefi
                                 <div className="w-full bg-transparent rounded-full h-3">
                                     <div
                                         className="bg-[#7367F0] h-2 rounded-l-full"
-                                        style={{ width: `${Math.random() * 60 + 40}%` }}
+                                        style={{ width: `${(music.likes / totalLikes) * 100}%` }}
                                     ></div>
                                 </div>
                             </div>

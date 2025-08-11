@@ -2,9 +2,9 @@
 
 import { DashboardInfo } from '@/app/(protected)/dashboard/api';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from 'recharts';
+import { useMemo } from 'react';
 
 const Chart = ({ visitors }: { visitors: DashboardInfo["visitors"] }) => {
-
 
 
     const CustomTooltip = ({ active, payload }: { active: boolean, payload: any }) => {
