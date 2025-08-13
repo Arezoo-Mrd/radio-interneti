@@ -21,7 +21,6 @@ import { toast } from "sonner";
 import { EditableAudioType } from ".";
 import DropDown from "./DropDown";
 import ModifyInput from "./ModifyInput";
-import { useUpdateMusicMutation } from "@/app/(protected)/media-archive/add-media/api";
 import { useSetAtom } from "jotai";
 import { ADD_MEDIA_STATE } from "@/states/add-media";
 import { FilterOptionsType } from "@/app/(protected)/media-archive/api/api.types";
@@ -33,16 +32,15 @@ type ItemProps = {
     musicId: number | undefined;
     genreId: number | undefined;
     filterOptions: FilterOptionsType | undefined;
-
+    isPending: boolean;
+    onSubmitHandler: (musicId: number, data: ModifyMusicSchemaType) => void;
 };
 
-const Item = ({ music, musicId, filterOptions }: ItemProps) => {
+const Item = ({ music, musicId, filterOptions, onSubmitHandler, isPending }: ItemProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const setAddMediaState = useSetAtom(ADD_MEDIA_STATE);
 
 
-    const { mutate, isPending } = useUpdateMusicMutation()
-    const { errorHandler } = useError()
     const { mutate: deleteMusic, isPending: isDeleting } = useDeleteMusicMutation()
     const router = useRouter();
 
@@ -98,14 +96,6 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
         }
     };
 
-    const closeEditMode = () => {
-        setAddMediaState((prev) => {
-            return {
-                ...prev,
-                showEditMode: false,
-            }
-        })
-    }
 
     const genres = useMemo(() => {
         return (
@@ -118,22 +108,6 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
         );
     }, [filterOptions?.genres]);
 
-    const onSubmitHandler = (data: ModifyMusicSchemaType) => {
-        if (!musicId) return;
-        mutate({
-            ...data,
-            musicId: musicId,
-        }, {
-            onSuccess: () => {
-                toast.success("موزیک با موفقیت ویرایش شد")
-                window.location.reload()
-
-            },
-            onError: (error) => {
-                errorHandler(error)
-            }
-        })
-    };
 
 
     const deleteMusicHandler = () => {
@@ -160,7 +134,7 @@ const Item = ({ music, musicId, filterOptions }: ItemProps) => {
 
     return (
         <form
-            onSubmit={handleSubmit(onSubmitHandler)}
+            onSubmit={handleSubmit((data) => onSubmitHandler(musicId || 0, data))}
             className="w-full flex flex-col p-5 rounded-xl items-center bg-[#F6F6F6]"
         >
             <div className="flex w-full items-center gap-7.25 pb-4 border-b">

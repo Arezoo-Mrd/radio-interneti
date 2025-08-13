@@ -97,7 +97,7 @@ const AddMedia = () => {
                 isLoading={isPending}
             />
             {addMediaState.showEditMode ? (
-                <EditMusics editableAudios={addMediaState.editableAudios} filterOptions={filterOptions?.data} />
+                <EditMusics filterOptions={filterOptions?.data} />
             ) : (
                 <AddNewMusic
                     audioFiles={audioFiles}
