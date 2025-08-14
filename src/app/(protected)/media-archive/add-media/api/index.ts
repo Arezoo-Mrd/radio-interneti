@@ -10,9 +10,7 @@ const postStoreMusic = async (body: StoreMusicRequestType) => {
     const formData = new FormData();
 
 
-    body.music.forEach((file) => {
-        formData.append("music", file);
-    });
+    formData.append("music", body.music);
 
     const currentToken = await getCookie("token");
     const response = await fetchInstance<StoreMusicResponseType>({

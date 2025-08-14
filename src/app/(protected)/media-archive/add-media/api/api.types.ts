@@ -1,7 +1,7 @@
 import { ModifyMusicSchemaType } from "@/schema/media.schema";
 
 export type StoreMusicRequestType = {
-    music: File[];
+    music: File;
 };
 
 
