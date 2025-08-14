@@ -57,7 +57,7 @@ const AddMedia = () => {
 
     const saveNewMusic = async () => {
         setIsProcessing(true);
-        let successfulUploads = [];
+        const successfulUploads: any[] = [];
 
         try {
             for (const [index, file] of audioFiles.entries()) {
