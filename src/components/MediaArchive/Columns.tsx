@@ -36,35 +36,7 @@ const Columns = ({ playlists }: ColumnsProps) => {
   const setAddMediaState = useSetAtom(ADD_MEDIA_STATE);
 
   const columns: ColumnDef<MusicType>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <div className="min-w-13 flex items-center justify-center">
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all"
-            className="cursor-pointer"
-          />
-        </div>
-      ),
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center justify-center">
-            <Checkbox
-              onCheckedChange={(checked) => {
-                row.toggleSelected(!!checked);
-              }}
-              className="cursor-pointer"
-              checked={row.getIsSelected()}
-            />
-          </div>
-        );
-      },
-    },
+
 
     {
       accessorKey: "title",

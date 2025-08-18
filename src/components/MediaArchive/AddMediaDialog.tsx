@@ -84,7 +84,7 @@ export function AddMediaDialog({
             onSubmit={handleSubmit(onSubmit)}
             className={cn("grid items-start gap-6", className)}
         >
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto">
                 {playlists
                     .map((playlist) => {
                         return (
