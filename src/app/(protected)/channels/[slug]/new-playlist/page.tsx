@@ -12,5 +12,6 @@ export default async function NewPlaylistPage({ searchParams }: { searchParams: 
     const playlistId = (await searchParams).playlist_id;
     const playlist = playlistId ? await getPlaylist(playlistId!, token) : null
 
+
     return <NewPlaylist playlist={playlist} />;
 }

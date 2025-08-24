@@ -222,6 +222,8 @@ export const useUpdateMusicPositionMutation = () => {
 export const useGetSinglePlaylistQuery = (id: string) => {
     return useQuery({
         queryKey: ["single-playlist", id],
+        refetchOnWindowFocus: true,
+        staleTime: 0,
         queryFn: () => getSinglePlaylist(id),
         enabled: !!id,
     });

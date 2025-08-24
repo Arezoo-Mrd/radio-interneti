@@ -11,7 +11,7 @@ import { ADD_PLAYLIST_STATE } from "@/states/add-playlist"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAtom } from "jotai"
 import { Loader2 } from "lucide-react"
-import { useParams, useSearchParams } from "next/navigation"
+import { useParams, usePathname, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -21,6 +21,8 @@ import { useError } from "@/hooks/use-error"
 
 export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: PlaylistResponseType[0] | null | undefined }) {
   const { slug } = useParams()
+  const pathname = usePathname()
+
   const { mutate: storePlaylist, isPending: isPendingStorePlaylist } = useStorePlaylistMutation()
   const { mutate: updatePlaylist, isPending: isPendingUpdatePlaylist } = useUpdatePlaylistMutation()
   const [playlistData, setPlaylistData] = useState<{ name: string, id: number } | null>(null)
@@ -127,14 +129,17 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
 
   useEffect(() => {
     return () => {
-      setAddPlaylistState((prev) => ({
-        ...prev,
+      setAddPlaylistState({
         showChangePosition: false,
         musics: [],
-        playListId: -1
-      }))
+        playListId: -1,
+        start_date: "",
+        start_time: "",
+        end_date: "",
+        end_time: "",
+      })
     }
-  }, [setAddPlaylistState])
+  }, [setAddPlaylistState, pathname, slug])
 
 
 
