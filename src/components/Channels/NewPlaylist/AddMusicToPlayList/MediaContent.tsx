@@ -7,7 +7,7 @@ import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -15,6 +15,8 @@ import { toast } from "sonner";
 const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElement | null>, playlistId: number }) => {
     const [searchInput, setSearchInput] = useState("");
     const [search, setSearch] = useState("");
+
+    const queryClient = useQueryClient()
 
 
     const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
@@ -28,12 +30,13 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
 
     const [page, setPage] = useState(1)
 
-    const queryClient = useQueryClient();
 
 
 
     const { isPending, mutate: addMediasToPlaylist } = useAddMediasToPlaylistMutation()
-    const { data: allMusics, isLoading } = useGetAllMusicQuery({ page, per_page: 50, title: search }, true)
+    const { data: allMusics, isLoading } = useGetAllMusicQuery({ page, per_page: 100, title: search }, true)
+
+
 
 
 
@@ -117,6 +120,11 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
 
 
     };
+
+
+
+
+
 
     return (
         isLoading ? <div className="flex items-center justify-center h-full" >

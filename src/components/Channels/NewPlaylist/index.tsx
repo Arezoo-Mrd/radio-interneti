@@ -62,11 +62,6 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
 
 
 
-
-
-
-
-
   const storePlaylistHandler = (data: CreatePlaylistSchemaType) => {
     if (initialPlaylistData) {
       updatePlaylist({
@@ -122,6 +117,8 @@ export function NewPlaylist({ playlist: initialPlaylistData }: { playlist: Playl
       })
   }
   const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+
+
 
 
 
