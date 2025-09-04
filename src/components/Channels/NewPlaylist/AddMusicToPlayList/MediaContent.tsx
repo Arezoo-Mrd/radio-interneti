@@ -7,7 +7,7 @@ import { ADD_PLAYLIST_STATE } from "@/states/add-playlist";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { Loader2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -16,10 +16,16 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
     const [searchInput, setSearchInput] = useState("");
     const [search, setSearch] = useState("");
 
+
     const queryClient = useQueryClient()
 
 
     const [addPlaylistState, setAddPlaylistState] = useAtom(ADD_PLAYLIST_STATE)
+    const [selectedMusics, setSelectedMusics] = useState<any[]>(addPlaylistState.musics)
+
+
+
+
     const {
         handleSubmit,
         control,
@@ -37,18 +43,6 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
     const { data: allMusics, isLoading } = useGetAllMusicQuery({ page, per_page: 100, title: search }, true)
 
 
-
-
-
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "musicId" as never,
-
-    })
-
-
-
-
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
             setSearch(searchInput);
@@ -64,35 +58,17 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
 
 
 
-    useEffect(() => {
-        if (addPlaylistState.musics.length > 0) {
-            append(addPlaylistState.musics.map((music) => ({ musicId: music.id })))
-        }
-    }, [addPlaylistState.musics])
-
-    const addMusic = (musicId: number) => {
-        append({ musicId });
-    };
-
-
-
-
-    const onSubmit = (data: any) => {
-        if (data.musicId.length === 0) {
+    const onSubmit = () => {
+        if (selectedMusics.length === 0) {
             toast.error("لطفا موزیک مورد نظر خود را انتخاب کنید");
             return;
         }
 
-        const musics = data.musicId.map((musicId: { musicId: number }) => {
+        const musics = selectedMusics.map((music: any) => {
             return {
-                music_id: musicId.musicId,
+                music_id: music.id as number,
             }
         })
-
-        const allInfoAboutMusics = allMusics?.data.filter((music) => {
-            return musics.some((musicId: any) => musicId.music_id === music.id)
-        })
-
 
 
         addMediasToPlaylist({
@@ -105,10 +81,7 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
                 toast.success("موزیک با موفقیت افزوده شد");
                 setAddPlaylistState({
                     showChangePosition: true,
-                    musics: allInfoAboutMusics?.map((music, index) => ({
-                        ...music,
-                        position: index + 1
-                    })) || [],
+                    musics: selectedMusics || [],
                     playListId: playlistId,
                     start_date: addPlaylistState.start_date,
                     start_time: addPlaylistState.start_time,
@@ -123,6 +96,22 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
 
 
 
+    const addOrRemoveMusic = (music: MusicType) => {
+
+        const currentMusics = selectedMusics
+        if (currentMusics.find((item: any) => item.id === music.id)) {
+            const newMusics = currentMusics.filter((item: any) => item.id !== music.id)
+            setSelectedMusics(newMusics)
+
+        } else {
+            const newMusics = [...currentMusics, { ...music, position: currentMusics.length + 1 }]
+            setSelectedMusics(newMusics)
+        }
+    }
+
+
+
+
 
 
 
@@ -132,7 +121,7 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
         </div > :
             <div>
                 <Input
-                    placeholder="جستجو..."
+                    placeholder="جستجو."
                     value={searchInput}
                     onChange={(event) => setSearchInput(event.target.value)}
                     className="w-full pr-10 h-10 shadow-none"
@@ -144,7 +133,7 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
                 >
                     <div className="flex flex-col gap-1 "  >
                         {allMusics?.data?.length ? allMusics.data
-                            .map((music) => {
+                            .map((music: MusicType) => {
                                 return (
                                     <div
                                         className="flex items-center w-full min-h-12 justify-between"
@@ -153,11 +142,7 @@ const MediaContent = ({ ref, playlistId }: { ref: React.RefObject<HTMLButtonElem
                                         <span className="text-[15px] font-PeydaMedium">{music.title}</span>
                                         <Checkbox
                                             onClick={() => {
-                                                if (fields.some((field: any) => field?.musicId! === music.id)) {
-                                                    remove(fields.findIndex((field: any) => field.musicId! === music.id));
-                                                } else {
-                                                    addMusic(music.id as number);
-                                                }
+                                                addOrRemoveMusic(music)
                                             }}
 
                                             defaultChecked={addPlaylistState.musics.some((field: any) => field?.id! === music.id)}

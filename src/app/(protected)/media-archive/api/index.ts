@@ -92,7 +92,12 @@ const deleteMusic = async (id: string) => {
     return response;
 };
 
-const addMediasToPlaylist = async (data: AddMediasToPlaylistSchemaType) => {
+const addMediasToPlaylist = async (data: {
+    playlist_id: number,
+    musics: {
+        music_id: number,
+    }[]
+}) => {
     const currentToken = await getCookie("token");
     const response = await fetchInstance<{ message: string }>({
         path: ADD_MEDIAS_TO_PLAYLIST,
